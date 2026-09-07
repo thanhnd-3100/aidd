@@ -1,0 +1,7 @@
+[
+  {
+    "command": "npx playwright test e2e/login.spec.ts",
+    "exitCode": 1,
+    "summary": "RED: all 7 tests failed (expected)—page elements do not exist; /login route and UI not yet implemented"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Typecheck clean across app + e2e (e2e excluded from app tsconfig per standard Next.js/Playwright separation)",
+      "ts": "2026-09-07T07:35:00.000Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Production build succeeds; routes /, /login, /todo, /auth/callback, plus middleware",
+      "ts": "2026-09-07T07:35:20.000Z"
+    },
+    {
+      "command": "npx eslint src middleware.ts e2e",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 lint errors/warnings across app and e2e sources",
+      "ts": "2026-09-07T07:34:40.000Z"
+    },
+    {
+      "command": "npx jest src",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "7 suites, 24 tests passed (session-guard, oauth-messages, login-actions, callback route, supabase middleware, todo page, existing home page)",
+      "ts": "2026-09-07T07:34:55.000Z"
+    },
+    {
+      "command": "npx playwright test e2e/login.spec.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "4 passed, 3 skipped via test.fixme (accepted, documented E2E gap — see clarifications.md)",
+      "ts": "2026-09-07T07:35:40.000Z"
+    }
+  ]
+}
