@@ -1,0 +1,37 @@
+{
+  "task": "Implement the /login route for MoMorph screen GzbNeVGJHz (SAA 2025): header logo + language selector, hero intro copy, Google OAuth login button, footer; wire real Supabase Google OAuth, session guards, and a /todo landing stub.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "login screen renders header logo, language selector, hero title ROOT FURTHER, subtitle, tagline, LOGIN With Google button, and footer per MoMorph spec",
+    "language selector switches VN/EN via next-intl cookie NEXT_LOCALE",
+    "LOGIN With Google button triggers real Supabase Google OAuth flow",
+    "successful OAuth login redirects to /todo",
+    "OAuth failure shows locale-aware error message Đăng nhập không thành công",
+    "authenticated user visiting /login is redirected to /todo",
+    "/todo is session-protected, redirects unauthenticated visitors to /login",
+    "e2e-red-first test policy honored with RED evidence before implementation",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test all pass",
+    "no open redirect on /auth/callback route"
+  ],
+  "touchpoints": [
+    "src/app/login/page.tsx",
+    "src/app/todo/page.tsx",
+    "src/app/auth/callback/route.ts",
+    "src/components/login/**",
+    "src/lib/auth/**",
+    "src/lib/supabase/**",
+    "middleware.ts",
+    "src/i18n/request.ts",
+    "src/messages/{vi,en}.json",
+    "e2e/login.spec.ts",
+    "playwright.config.ts",
+    "tsconfig.json",
+    "jest.config.ts"
+  ],
+  "blastRadius": "Greenfield feature — first real screen in the app plus new auth/i18n/E2E infra. No pre-existing routes or components modified besides src/app/layout.tsx (added NextIntlClientProvider) and next.config.ts (next-intl plugin). Existing '/' route and its tests verified unaffected throughout.",
+  "contracts": [
+    "Supabase Google OAuth already configured server-side (supabase/config.toml auth.external.google) — this feature only adds the client/app-side integration",
+    "next-intl runs cookie-only (NEXT_LOCALE), no [locale] URL segment",
+    "/todo is a stub landing target; full page content is a future plan"
+  ]
+}

@@ -1,0 +1,25 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 40px 90px;
+  border-top: 1px solid #2e3940;
+  background-color: #00101a;
+}
+
+.copyright {
+  margin: 0;
+  font-family: var(--font-montserrat-alternates);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .footer {
+    padding: 24px;
+  }
+}

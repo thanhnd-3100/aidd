@@ -1,0 +1,34 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "login screen renders header logo, language selector, hero title ROOT FURTHER, subtitle, tagline, LOGIN With Google button, and footer per MoMorph spec — confirmed via visual validation against get_frame_image at desktop and mobile widths",
+    "language selector switches VN/EN via next-intl cookie NEXT_LOCALE — confirmed in language-selector.tsx and e2e dropdown test",
+    "LOGIN With Google button triggers real Supabase Google OAuth flow — confirmed via login-actions.ts signInWithGoogle and login-actions.test.ts",
+    "successful OAuth login redirects to /todo — confirmed in src/app/auth/callback/route.ts and route.test.ts",
+    "OAuth failure shows locale-aware error message Đăng nhập không thành công — confirmed: oauth-messages.ts returns a code, login-screen-container.tsx resolves the display string via useTranslations, no hardcoded string remains",
+    "authenticated user visiting /login is redirected to /todo — confirmed in session-guard.ts redirectIfAuthenticated and session-guard.test.ts",
+    "/todo is session-protected, redirects unauthenticated visitors to /login — confirmed in src/app/todo/page.tsx and page.test.tsx",
+    "e2e-red-first test policy honored with RED evidence before implementation — confirmed: e2e/login.spec.ts written and run to real RED (exit 1) before any screen/auth code existed, per tester report",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test all pass — confirmed live this session, all exit 0",
+    "no open redirect on /auth/callback route — confirmed: all redirect targets in callback route and session-guard are hardcoded constants, never derived from user input"
+  ],
+  "regressionChecked": [
+    "existing / route and its test unaffected by layout.tsx / next.config.ts changes (build + jest pass)",
+    "middleware.ts vs session-guard.ts: no redirect loop or double-guard conflict — middleware only refreshes cookies, all redirect decisions stay in session-guard.ts",
+    "test.fixme isolation verified: the 3 quarantined tests do not affect the 4 real passing tests (playwright exit 0, 4 passed / 3 skipped)",
+    "deleted unused public/login/ assets (root-further-graphic.png, icon-chevron-down.svg, icon-google.svg) grepped for dangling references — none found",
+    "tsconfig.json e2e exclusion does not break Playwright's own test execution (playwright test still runs and passes after the exclude)"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": [],
+  "findings": [],
+  "riskGate": {
+    "touchesSensitiveArea": true,
+    "signoffRequired": true,
+    "humanSignedOff": true
+  }
+}
