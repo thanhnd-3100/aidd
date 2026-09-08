@@ -31,10 +31,68 @@ authorization added alongside the home screen (see [Roles and authorization](#ro
 |---|---|---|
 | `src/lib/supabase/client.ts` | Client Components (`createBrowserClient`) | Runs in the browser; used to kick off `signInWithOAuth`. |
 | `src/lib/supabase/server.ts` | Server Components, Server Actions, Route Handlers (`createServerClient`) | Reads/writes cookies via `next/headers`. Cookie writes are wrapped in try/catch because `cookies().set()` throws when called during a Server Component render (not a Server Action/Route Handler) — middleware refreshing the session makes that a safe no-op. |
-| `src/lib/supabase/middleware.ts` | `middleware.ts` at the repo root (`updateSession`) | Rotates the access/refresh token pair when the access token has expired, and relays rotated cookies onto both the incoming request and the outgoing response. Without this, expired access tokens silently log users out because nothing else in the app refreshes the session. |
+| `src/lib/supabase/middleware.ts` | `src/middleware.ts` (`updateSession`) | Rotates the access/refresh token pair when the access token has expired, and relays rotated cookies onto both the incoming request and the outgoing response. Without this, expired access tokens silently log users out because nothing else in the app refreshes the session. |
 
-`middleware.ts` matches only `/login` and `/todo` (see its `config.matcher`) — it does not run on
-every request.
+### `middleware.ts` location and matcher
+
+`middleware.ts` lives at **`src/middleware.ts`** (colocated with `src/app/`), not the repo root.
+Its `config.matcher` is a catch-all — `/((?!_next/static|_next/image|favicon.ico|api).*)` — so it
+runs on every route except Next.js internals and API routes. This replaced an earlier explicit
+per-route array; the catch-all removes the recurring chore of remembering to add each new route to
+the list, and (see below) is what makes the site-wide prelaunch gate actually cover every route,
+including ones added later.
+
+**Historical note:** for this project's `src/app/` layout, Next.js only picks up middleware from
+`src/middleware.ts` (or root `middleware.ts` when there is no `src/` directory) — never from a root
+`middleware.ts` sitting alongside a `src/` tree. The file was at the repo root from the very first
+commit, so Next.js silently never loaded it, in any environment, until it was moved. Confirmed via
+`npm run build`: the "ƒ Proxy (Middleware)" build-output line only appears once the file is under
+`src/`. Practically, this means `updateSession()`'s session-refresh logic never actually ran before
+this fix — if session-refresh behavior looks "new," it isn't; the code predates this fix, only its
+execution doesn't.
+
+### Fail-open on `updateSession` failure
+
+Because the matcher above runs on nearly every route, `src/middleware.ts` wraps the
+`updateSession()` call in a try/catch: if it throws (e.g. missing/misconfigured Supabase env
+vars), the middleware logs the error via `console.error` and returns `NextResponse.next()`
+instead of letting the exception 500 the entire site. This only skips the token-refresh step for
+that one request — it does not bypass authorization. `redirectIfAuthenticated()` /
+`redirectIfUnauthenticated()` (see [Session guard](#session-guard)) call
+`supabase.auth.getUser()` independently downstream, so a route still enforces its own guard; the
+practical effect of a fail-open request is that an expired access token isn't rotated in time,
+which reads as "logged out" rather than "logged in with no check."
+
+### Prelaunch gate
+
+`src/middleware.ts` also runs `checkPrelaunchGate()` (`src/lib/prelaunch/gate.ts`) before
+`updateSession()`. When active, every route redirects to `/countdown`
+(`src/app/countdown/page.tsx`, rendering the presentational `CountdownScreen` from
+`src/components/countdown/countdown-screen.tsx`) except `/countdown` itself and Next.js internals
+(`_next/*`, `favicon.ico`, `/api/*`).
+
+`PRELAUNCH_GATE_ENABLED` is **tri-state**, resolved by `parseGateOverride()`:
+
+| Value | Behavior |
+|---|---|
+| `"true"` | Gate forced **on** for every request, regardless of date. |
+| `"false"` | Gate forced **off** for every request, regardless of date. This is the current `.env.local` value and the safe default. |
+| unset / anything else | **Date-driven**: gate is on while `now < (EVENT_DATETIME - 1h)`, and turns off starting 1 hour before the event — the app opens to guests one hour early. |
+
+In the date-driven case, a missing or invalid `EVENT_DATETIME` (`isBeforeLaunchWindow()` fails to
+parse it) safely resolves to gate-**off**, never gate-on — bad config never locks guests out.
+
+This tri-state design replaced an earlier pure on/off toggle that never read `EVENT_DATETIME` at
+all; the date-driven branch now needs middleware (Edge Runtime) to read `EVENT_DATETIME` directly,
+which is why it must be wired as a Docker build arg the same way as the Supabase vars (see the
+[Docker section in the README](../README.md#docker)) — the same class of "env var frozen into the
+Edge Runtime build" issue applies to it now too. The gate also applies uniformly — no admin bypass.
+Full reasoning: see `plans/260908-1417-countdown-prelaunch-screen/clarifications.md`.
+
+The gate is public — no auth check — since a guest can't be asked to log in to an app that isn't
+open yet. Its routing decision is a pure function, `shouldGate(pathname, gateOverride,
+isBeforeLaunchWindow)`, unit-tested directly rather than through E2E (flipping real env vars
+mid-suite would need a second Playwright server per case).
 
 ## Session guard
 
@@ -82,17 +140,19 @@ third stub in that set but has since been built out with real content — see
 | `/sun-kudos` | `src/app/sun-kudos/page.tsx` | "Coming soon" placeholder; no role gate. |
 | `/admin-dashboard` | `src/app/admin-dashboard/page.tsx` | "Coming soon" placeholder behind the admin gate described above. |
 
-`middleware.ts`'s `config.matcher` now also lists `/`, `/awards-information`, `/sun-kudos`, and
-`/admin-dashboard` alongside `/login` and `/todo`, so session refresh runs on all of them.
+`middleware.ts`'s catch-all matcher (see [middleware location and matcher](#middlewarets-location-and-matcher))
+covers `/`, `/awards-information`, `/sun-kudos`, and `/admin-dashboard` along with every other
+route, so session refresh runs on all of them.
 
 ## Environment variables
 
 See the README's [Environment Variables](../README.md#environment-variables) section —
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `GOOGLE_CLIENT_ID`,
-`GOOGLE_CLIENT_SECRET`, `EVENT_DATETIME`. The Google client ID/secret are configured on the
-Supabase project's `auth.external.google` provider, not read directly by this app.
-`EVENT_DATETIME` is unrelated to auth — it's the homepage countdown target, read in
-`src/lib/home/get-homepage-view-data.ts`.
+`GOOGLE_CLIENT_SECRET`, `EVENT_DATETIME`, `PRELAUNCH_GATE_ENABLED`. The Google client ID/secret are
+configured on the Supabase project's `auth.external.google` provider, not read directly by this
+app. `EVENT_DATETIME` is unrelated to auth — it's the homepage countdown target, read in
+`src/lib/home/get-homepage-view-data.ts`. `PRELAUNCH_GATE_ENABLED` is also unrelated to auth — see
+[Prelaunch gate](#prelaunch-gate) above.
 
 ## i18n note
 

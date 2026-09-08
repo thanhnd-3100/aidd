@@ -21,13 +21,15 @@ Copy `.env.local.example` to `.env.local` and fill in:
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (public) key |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID, configured on the Supabase project's `auth.external.google` provider |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `EVENT_DATETIME` | ISO-8601 target datetime for the homepage countdown (server-only, no `NEXT_PUBLIC_` prefix). Falls back to a fixed default when unset or invalid — see `src/lib/home/get-homepage-view-data.ts`. |
+| `EVENT_DATETIME` | ISO-8601 target datetime for the homepage countdown (server-only, no `NEXT_PUBLIC_` prefix). Read by both `src/app/countdown/page.tsx` and `src/middleware.ts` (Edge Runtime). Falls back to a fixed default / gate-off when unset or invalid. |
+| `PRELAUNCH_GATE_ENABLED` | Site-wide prelaunch gate (server-only, read by `src/middleware.ts`). Tri-state: `"true"` forces on, `"false"` forces off (current `.env.local` value, safe default), unset/other is date-driven off `EVENT_DATETIME`. See [docs/authentication.md](docs/authentication.md#prelaunch-gate). |
 
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `GOOGLE_CLIENT_ID`, and
 `GOOGLE_CLIENT_SECRET` are required for `/login` (Google sign-in via Supabase) and any page behind
-the session middleware (`/`, `/todo`, `/awards-information`, `/sun-kudos`, `/admin-dashboard`).
-`EVENT_DATETIME` is optional. See [docs/authentication.md](docs/authentication.md) for how the
-pieces fit together, including the role/authorization model.
+the session middleware — which, since `src/middleware.ts`'s matcher is a catch-all, is every route
+except Next.js internals and `/api/*`. `EVENT_DATETIME` and `PRELAUNCH_GATE_ENABLED` are optional.
+See [docs/authentication.md](docs/authentication.md) for how the pieces fit together, including the
+role/authorization model and the prelaunch gate.
 
 ## Testing
 
@@ -86,6 +88,8 @@ Or with plain Docker (pass the same build args and an env file manually):
 docker build \
   --build-arg NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
   --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+  --build-arg PRELAUNCH_GATE_ENABLED=$PRELAUNCH_GATE_ENABLED \
+  --build-arg EVENT_DATETIME=$EVENT_DATETIME \
   -t aidd-nextapp .
 docker run -p 3000:3000 --env-file .env.local aidd-nextapp
 ```

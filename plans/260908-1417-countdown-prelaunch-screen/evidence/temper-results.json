@@ -1,0 +1,95 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Typecheck clean across app + e2e",
+      "ts": "2026-09-08T08:08:00.000Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Production build succeeds; 9 routes incl. /countdown, plus 'Proxy (Middleware)' confirming middleware is now detected at src/middleware.ts",
+      "ts": "2026-09-08T08:08:20.000Z"
+    },
+    {
+      "command": "npx eslint src e2e",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 lint errors/warnings across app and e2e sources",
+      "ts": "2026-09-08T08:07:50.000Z"
+    },
+    {
+      "command": "npx jest src",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "19 suites, 89 tests passed (85 baseline + 4 new pad2-clamp tests)",
+      "ts": "2026-09-08T08:08:10.000Z"
+    },
+    {
+      "command": "npx playwright test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "22 passed, 16 skipped via documented test.fixme (login 4p/3s, home 10p/4s, awards-information 1p/9s, countdown 7p/0s) — zero regressions",
+      "ts": "2026-09-08T08:08:40.000Z"
+    },
+    {
+      "command": "PRELAUNCH_GATE_ENABLED=true npx next dev + curl / and /countdown",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Gate ON in dev: / returns 307 to /countdown, /countdown itself returns 200 — verified after middleware relocation fix",
+      "ts": "2026-09-08T07:52:00.000Z"
+    },
+    {
+      "command": "npm run docker:up (gate off, default)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Full Docker build/run: / and /countdown both return 200, no errors in logs",
+      "ts": "2026-09-08T07:55:00.000Z"
+    },
+    {
+      "command": "npm run docker:rebuild (gate on)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Full Docker --no-cache build/run with PRELAUNCH_GATE_ENABLED=true: / returns 307 to /countdown, /countdown returns 200 — gate verified working through the full production build path",
+      "ts": "2026-09-08T08:00:00.000Z"
+    },
+    {
+      "command": "npx jest src (after tri-state gate follow-up)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "19 suites, 121 tests passed (89 baseline + 32 new tri-state gate tests)",
+      "ts": "2026-09-08T08:41:00.000Z"
+    },
+    {
+      "command": "npx playwright test (after tri-state gate follow-up)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "22 passed, 16 skipped, 0 failed — unchanged baseline, confirms .env.local's PRELAUNCH_GATE_ENABLED=false still forces gate off under the new tri-state logic",
+      "ts": "2026-09-08T08:42:00.000Z"
+    },
+    {
+      "command": "docker build/run: override=false (current .env.local)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Real production Docker build/run: / returns 200, no redirect — override=false forces gate off regardless of EVENT_DATETIME",
+      "ts": "2026-09-08T08:44:00.000Z"
+    },
+    {
+      "command": "docker build/run: override unset, EVENT_DATETIME +2 days",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Real production Docker build/run: / returns 307 to /countdown — date logic correctly gates when more than 24h before the event",
+      "ts": "2026-09-08T08:46:00.000Z"
+    },
+    {
+      "command": "docker build/run: override unset, EVENT_DATETIME +12 hours",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Real production Docker build/run: / returns 200, no redirect — 24h-early-access window correctly opens the app before the event",
+      "ts": "2026-09-08T08:49:00.000Z"
+    }
+  ]
+}

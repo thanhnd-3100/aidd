@@ -46,6 +46,18 @@ async function loadAwardsInformationMessages(
 }
 
 /**
+ * The Countdown Prelaunch screen owns a single self-contained partial file
+ * shaped `{ vi: {...}, en: {...} }` — same straightforward pattern as
+ * `awards-information`, merged directly under its own top-level `countdown`
+ * key.
+ */
+async function loadCountdownMessages(locale: Locale): Promise<MessagesTree> {
+  const partial = (await import("../messages/countdown.json"))
+    .default as LocalizedPartial;
+  return partial[locale];
+}
+
+/**
  * Cookie-only locale resolution (no `[locale]` URL segment): reads
  * `NEXT_LOCALE`, falling back to `defaultLocale` when absent or invalid.
  *
@@ -64,12 +76,14 @@ export default getRequestConfig(async () => {
     .default as MessagesTree;
   const homeMessages = await loadHomeMessages(locale);
   const awardsInformationMessages = await loadAwardsInformationMessages(locale);
+  const countdownMessages = await loadCountdownMessages(locale);
 
   return {
     locale,
     messages: deepMergeMessages(baseMessages, {
       home: homeMessages,
       "awards-information": awardsInformationMessages,
+      countdown: countdownMessages,
     }),
   };
 });
