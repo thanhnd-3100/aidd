@@ -1,0 +1,14 @@
+{
+  "vi": {
+    "title": "Sự kiện sẽ bắt đầu sau",
+    "days": "Ngày",
+    "hours": "Giờ",
+    "minutes": "Phút"
+  },
+  "en": {
+    "title": "Event starts in",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes"
+  }
+}

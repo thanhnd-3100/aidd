@@ -12,7 +12,7 @@ export interface CountdownProps {
 }
 
 function pad2(value: number): string {
-  return String(Math.max(0, value)).padStart(2, "0").slice(-2);
+  return String(Math.min(Math.max(0, value), 99)).padStart(2, "0");
 }
 
 interface TileProps {

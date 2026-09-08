@@ -1,0 +1,32 @@
+{
+  "task": "Implement the '/countdown' Prelaunch screen for MoMorph screen 8PJQswPZmU (SAA 2025): full-bleed background, locale-aware title, Days/Hours/Minutes LED countdown ticking every second, sourced from the existing EVENT_DATETIME env var. Add a site-wide prelaunch gate with a tri-state PRELAUNCH_GATE_ENABLED control: 'true' forces the gate on, 'false' forces it off (regression-safe default matching the deployed .env.local), unset falls through to date logic (gate on while now < EVENT_DATETIME - 24h, off from 24h before the event onward, safely defaulting to off on missing/invalid EVENT_DATETIME). During integration, discovered and fixed a critical pre-existing repo-wide bug: middleware.ts lived at the repo root instead of src/middleware.ts (required for this project's src/app/ layout), so it silently never executed in any environment since the project's first commit — Supabase session-refresh and the new gate both depended on it.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "/countdown renders background, locale-aware title, and 3 countdown units (Days/Hours/Minutes) with 2-digit zero-padded values ticking every second",
+    "countdown reuses the EVENT_DATETIME env var, no new API endpoint",
+    "/countdown is fully public, no auth guard",
+    "PRELAUNCH_GATE_ENABLED is tri-state: true forces gate on, false forces gate off regardless of date, unset falls through to date logic gating every route except /countdown and Next internals while now is more than 24 hours before EVENT_DATETIME",
+    "PRELAUNCH_GATE_ENABLED and EVENT_DATETIME are both wired through Docker build-args (mirrors the NEXT_PUBLIC_SUPABASE_URL pattern) since middleware reads them in the Edge Runtime",
+    "middleware.ts relocated to src/middleware.ts, verified via build output ('ƒ Proxy (Middleware)' line) and live gate-on/off tests in both next dev and a full Docker build/run cycle",
+    "middleware fails open (logs and passes through) if updateSession throws, given the matcher is now a repo-wide catch-all",
+    "pad2() in both the new countdown screen and the pre-existing home-screen hero countdown clamps day counts at 99 instead of truncating (fixed a live bug found during review)",
+    "e2e-red-first test policy honored with RED evidence before implementation",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test (all specs) all pass with zero regressions to login/home/awards-information",
+    "npm run docker:up and npm run docker:rebuild both verified working across all three gate branches (override false, date-logic gated, date-logic within the 24h window) via real production Docker build/run cycles"
+  ],
+  "touchpoints": [
+    ".env.local.example", ".env.local", "Dockerfile", "docker-compose.yml",
+    "src/lib/prelaunch/gate.ts", "src/middleware.ts",
+    "src/components/countdown/**", "src/messages/countdown.json", "src/i18n/request.ts",
+    "src/app/countdown/page.tsx",
+    "src/components/home/countdown/countdown.tsx (pad2 bug fix, pre-existing file)",
+    "e2e/countdown.spec.ts", "docs/authentication.md", "README.md"
+  ],
+  "blastRadius": "Repo-wide: middleware.ts relocation + catch-all matcher affects every route's request pipeline (session refresh + new gate). Verified via full regression (all 4 e2e specs, full jest suite, build, two full Docker build/run cycles including gate-on) with zero regressions. The pad2 fix also touches the pre-existing, already-delivered home-screen hero countdown (same bug, same fix).",
+  "contracts": [
+    "Gate is tri-state (true/false/date-driven) — PRELAUNCH_GATE_ENABLED=false in .env.local is a regression-safety override that keeps dev/test/production unaffected even though EVENT_DATETIME is future-dated; unsetting it lets the date logic (open 24h before the event) take over",
+    "Countdown ticks every 1s (this screen's own spec), deliberately not shared with the home screen's ~30s hook",
+    "Gate scenarios (all three tri-state branches, 24h boundary, safe-default-on-bad-config) are unit-tested (gate.test.ts) — not E2E-tested — flipping env vars mid-suite would need a second Playwright server; all three branches were additionally verified live through real Docker production build/run cycles by the orchestrator",
+    "middleware.ts fails open on updateSession errors to avoid a config/env issue 500-ing the entire site under the new catch-all matcher"
+  ]
+}

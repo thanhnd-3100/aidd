@@ -1,0 +1,143 @@
+.screen {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 96px 144px;
+  overflow: hidden;
+  background-color: #00101a;
+  font-family: var(--font-montserrat);
+}
+
+/* mm:2268:35129 MM_MEDIA_BG Image */
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: url("/countdown/background.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* mm:2268:35130 Cover — semi-transparent dark overlay over the background */
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    18deg,
+    #00101a 15.48%,
+    rgba(0, 18, 29, 0.46) 52.13%,
+    rgba(0, 19, 32, 0) 63.41%
+  );
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 1224px;
+}
+
+/* mm:2268:35137 */
+.title {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 48px;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* mm:2268:35138 Time */
+.units {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 60px;
+}
+
+.unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* mm:2268:35140 Frame 485 */
+.digits {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+}
+
+/* mm:2268:35141/35142 Group 5 / Group 4 */
+.digitBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76.8px;
+  height: 122.88px;
+  border: 0.75px solid rgba(255, 234, 158, 0.5);
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(24.96px);
+}
+
+.digit {
+  /* "Digital Numbers" isn't bundled via next/font; fall back to a tabular
+     monospace stack so unpadded digits never reflow the box — same
+     fallback used by the home screen's hero countdown. */
+  font-family: "Digital Numbers", ui-monospace, "SFMono-Regular", Menlo,
+    Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 73.7px;
+  color: #ffffff;
+}
+
+.label {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .screen {
+    padding: 64px 24px;
+  }
+
+  .units {
+    gap: 32px;
+  }
+
+  .digitBox {
+    width: 48px;
+    height: 76px;
+  }
+
+  .digit {
+    font-size: 44px;
+  }
+
+  .label {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}

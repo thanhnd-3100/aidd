@@ -22,6 +22,21 @@ ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 
+# PRELAUNCH_GATE_ENABLED is read by middleware.ts (Edge Runtime) — same
+# "frozen empty at build time" hazard as the Supabase vars above, so it must
+# also be passed as a build arg. It is server-only (no NEXT_PUBLIC_ prefix)
+# and is intentionally NOT part of the fail-fast guard below: an
+# unset/empty value must default safely to "gate off", not fail the build.
+ARG PRELAUNCH_GATE_ENABLED
+ENV PRELAUNCH_GATE_ENABLED=$PRELAUNCH_GATE_ENABLED
+
+# EVENT_DATETIME is also read by middleware.ts (Edge Runtime) to drive the
+# date-based prelaunch gate fallback — same build-arg treatment as
+# PRELAUNCH_GATE_ENABLED above. Server-only, intentionally NOT part of the
+# fail-fast guard below: missing/invalid must default safely to "gate off".
+ARG EVENT_DATETIME
+ENV EVENT_DATETIME=$EVENT_DATETIME
+
 # GOOGLE_CLIENT_ID/SECRET are not read by this app (Supabase's own
 # auth.external.google provider reads them) and aren't needed by `next
 # build`, but are accepted here so docker-compose.yml can pass them as
