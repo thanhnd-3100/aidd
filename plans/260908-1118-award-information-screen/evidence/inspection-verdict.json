@@ -1,0 +1,32 @@
+{
+  "score": 8,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "page renders hero (ROOT FURTHER / Sun* Annual Award 2025), section title (Sun* Annual Awards 2025 / Hệ thống giải thưởng SAA 2025), 6-item category nav in order, 6 award cards, and the reused Sun* Kudos block — confirmed via reviewer's full file read and a live Figma re-crawl",
+    "each award card uses real MCP-sourced content (title, description where the design has one, quantity, prize value) with no invented text — independently re-verified all 6 category descriptions against Figma character-for-character (whitespace-only diffs); the MVP card title truncation found in review was fixed to 'MVP (Most Valuable Person)' and re-verified against the live Figma text node",
+    "category nav click scrolls to the matching section and sets that item active, clearing the previous active item — confirmed via real userEvent-driven RTL tests, not simulated events",
+    "unauthenticated visitors are redirected to /login; authenticated visitors see the full page — confirmed genuinely server-side with no client-side bypass, matching the /todo precedent exactly",
+    "existing homepage award-card hash-anchor links (/awards-information#slug) continue to resolve to the correct section — confirmed all 6 slugs match exactly",
+    "e2e-red-first test policy honored with RED evidence before implementation — confirmed real RED (exit 1, 9/10 failing) before any component/page code existed",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test (all specs) all pass — confirmed live this session, all exit 0",
+    "no regressions to the existing login and home screens — confirmed via combined 3-spec Playwright run (15 passed, 16 documented skips) and full jest suite (65/65)"
+  ],
+  "regressionChecked": [
+    "i18n merge has no key collisions between login/home/awards-information namespaces",
+    "auth guard has no client-side escape hatch, no content leaks pre-auth (route compiles as dynamic, not statically prerendered)",
+    "homepage AwardsGrid hash-anchor ids match this screen's anchor ids exactly",
+    "KudosPromo reused as-is, no duplication, data-testid intact",
+    "MVP title fix applied consistently to both the real messages JSON (vi+en) and the RTL test's mock, re-verified with a full test/build/lint pass"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": [],
+  "findings": [],
+  "riskGate": {
+    "touchesSensitiveArea": true,
+    "signoffRequired": true,
+    "humanSignedOff": true
+  }
+}

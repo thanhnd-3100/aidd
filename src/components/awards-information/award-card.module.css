@@ -1,0 +1,89 @@
+/* mm:313:8467 etc. (mms_D.1-D.6) */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  width: 100%;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(46, 57, 64, 1);
+  scroll-margin-top: 96px;
+  font-family: var(--font-montserrat);
+}
+
+/* mm:*;214:2525;81:2442 mm_media_Award-Thumb-Background */
+.image {
+  flex-shrink: 0;
+  width: 336px;
+  height: 336px;
+  border-radius: 24px;
+  border: 1px solid #ffea9e;
+  box-shadow:
+    0 4px 4px rgba(0, 0, 0, 0.25),
+    0 0 6px #fae287;
+  object-fit: cover;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.2;
+  color: #ffea9e;
+}
+
+.description {
+  margin: 0;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(46, 57, 64, 1);
+}
+
+.prizeLines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.line {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .image {
+    width: 100%;
+    max-width: 336px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .content {
+    align-items: center;
+  }
+}

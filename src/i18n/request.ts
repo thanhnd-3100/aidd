@@ -32,6 +32,20 @@ async function loadHomeMessages(locale: Locale): Promise<MessagesTree> {
 }
 
 /**
+ * The Award Information screen owns a single self-contained partial file
+ * shaped `{ vi: {...}, en: {...} }` — unlike `home`, it isn't split across
+ * multiple section files, so it merges in directly under its own top-level
+ * `awards-information` key instead of joining the home merge above.
+ */
+async function loadAwardsInformationMessages(
+  locale: Locale
+): Promise<MessagesTree> {
+  const partial = (await import("../messages/awards-information.json"))
+    .default as LocalizedPartial;
+  return partial[locale];
+}
+
+/**
  * Cookie-only locale resolution (no `[locale]` URL segment): reads
  * `NEXT_LOCALE`, falling back to `defaultLocale` when absent or invalid.
  *
@@ -49,9 +63,13 @@ export default getRequestConfig(async () => {
   const baseMessages = (await import(`../messages/${locale}.json`))
     .default as MessagesTree;
   const homeMessages = await loadHomeMessages(locale);
+  const awardsInformationMessages = await loadAwardsInformationMessages(locale);
 
   return {
     locale,
-    messages: deepMergeMessages(baseMessages, { home: homeMessages }),
+    messages: deepMergeMessages(baseMessages, {
+      home: homeMessages,
+      "awards-information": awardsInformationMessages,
+    }),
   };
 });

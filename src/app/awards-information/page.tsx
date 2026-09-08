@@ -1,37 +1,14 @@
-interface AwardCategory {
-  slug: string;
-  title: string;
-}
+import { redirectIfUnauthenticated } from "@/lib/auth/session-guard";
+import { AwardInformationScreen } from "@/components/awards-information/award-information-screen";
 
 /**
- * Stub award categories the homepage's category cards hash-link into
- * (`#slug`). Real content is a future plan — see
- * plans/260907-1545-home-screen/clarifications.md.
+ * Authenticated-only Awards Information page (mm:313:8436). Guards the
+ * route the same way `/todo` does, then renders the fully static
+ * `AwardInformationScreen` composition from Track A — see
+ * plans/260908-1118-award-information-screen/phase-i1-integration.md.
  */
-export const AWARD_CATEGORIES: AwardCategory[] = [
-  { slug: "top-talent", title: "Top Talent" },
-  { slug: "top-project", title: "Top Project" },
-  { slug: "top-project-leader", title: "Top Project Leader" },
-  { slug: "best-manager", title: "Best Manager" },
-  { slug: "signature-2025-creator", title: "Signature 2025 Creator" },
-  { slug: "mvp", title: "MVP" },
-];
+export default async function AwardsInformationPage() {
+  await redirectIfUnauthenticated("/login");
 
-/**
- * Stub landing page for the homepage's "Awards Information" link and its
- * six award-category cards. Each category gets a real id-anchored section
- * so hash-scroll navigation (e.g. `/awards-information#mvp`) works; full
- * content is a future plan.
- */
-export default function AwardsInformationPage() {
-  return (
-    <main>
-      <h1>Awards Information</h1>
-      {AWARD_CATEGORIES.map((category) => (
-        <section key={category.slug} id={category.slug}>
-          <h2>{category.title}</h2>
-        </section>
-      ))}
-    </main>
-  );
+  return <AwardInformationScreen />;
 }

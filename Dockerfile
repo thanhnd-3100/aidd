@@ -29,6 +29,19 @@ ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ARG GOOGLE_CLIENT_ID
 ARG GOOGLE_CLIENT_SECRET
 
+# Fail the BUILD, not a production request, when these are missing. Without
+# this check, `docker compose build`/`up --build` run without `--env-file
+# .env.local` (Compose's own default is a file literally named `.env`, which
+# this project doesn't use) silently produces an image whose Edge Runtime
+# middleware bundle has these values frozen in as empty strings — every
+# request then throws "Missing Supabase environment variables" at runtime
+# with no indication the build itself was the problem. See README.md#docker.
+RUN if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY" ]; then \
+      echo "ERROR: NEXT_PUBLIC_SUPABASE_URL and/or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY build args are empty." >&2; \
+      echo "Use 'npm run docker:up' (not a bare 'docker compose up --build'/'docker build') so these are passed from .env.local." >&2; \
+      exit 1; \
+    fi
+
 RUN npm run build
 
 # ---- Runtime ----
