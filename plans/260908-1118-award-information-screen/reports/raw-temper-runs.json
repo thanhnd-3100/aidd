@@ -1,0 +1,12 @@
+[
+  {
+    "command": "npx eslint e2e/awards-information.spec.ts",
+    "exitCode": 0,
+    "summary": "Linting passed with zero errors and zero warnings"
+  },
+  {
+    "command": "npx playwright test e2e/awards-information.spec.ts",
+    "exitCode": 1,
+    "summary": "10 tests executed: 1 passed, 9 failed (real RED from assertion failures: missing auth guard, hero content, nav, card text, active states)"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Typecheck clean across app + e2e",
+      "ts": "2026-09-08T06:15:00.000Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Production build succeeds; /awards-information compiles as a dynamic route",
+      "ts": "2026-09-08T06:15:20.000Z"
+    },
+    {
+      "command": "npx eslint src e2e middleware.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 lint errors/warnings across app and e2e sources",
+      "ts": "2026-09-08T06:14:50.000Z"
+    },
+    {
+      "command": "npx jest src",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "15 suites, 65 tests passed, including 10 new RTL tests for AwardInformationScreen",
+      "ts": "2026-09-08T06:15:05.000Z"
+    },
+    {
+      "command": "npx playwright test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "15 passed, 16 skipped via documented test.fixme (login 4p/3s, home 10p/4s, awards-information 1p/9s) — all accepted, documented gaps",
+      "ts": "2026-09-08T06:15:40.000Z"
+    }
+  ]
+}

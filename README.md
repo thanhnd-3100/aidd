@@ -67,6 +67,14 @@ nothing — which throws `Missing Supabase environment variables` at request tim
 `docker exec <container> env` shows the right values (misleadingly, since env_file DOES set the
 container's runtime env correctly — it just doesn't fix what was already frozen into the build).
 `npm run docker:up` wraps the correct `--env-file .env.local` flag so this can't be forgotten.
+The Dockerfile also guards this at build time: `docker build`/`docker compose build` now fails
+immediately with a clear error if `NEXT_PUBLIC_SUPABASE_URL` or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+is empty, pointing you back to `npm run docker:up` — so skipping it is caught at build time instead
+of surfacing as a confusing runtime error later.
+
+Need a clean rebuild (e.g. after changing the Dockerfile or dependencies)? Use `npm run docker:rebuild`
+instead of a plain `docker compose build --no-cache` — the plain form skips `--env-file .env.local` and
+hits the same build guard.
 
 Runtime env vars (including server-only ones like `GOOGLE_CLIENT_SECRET` and `EVENT_DATETIME`) are
 also loaded via `env_file: .env.local` in `docker-compose.yml` for the parts of the app that do read

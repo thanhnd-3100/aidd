@@ -15,6 +15,7 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "docker:up": "docker compose --env-file .env.local up --build",
+    "docker:rebuild": "docker compose --env-file .env.local build --no-cache && docker compose --env-file .env.local up",
     "docker:down": "docker compose down"
   },
   "dependencies": {

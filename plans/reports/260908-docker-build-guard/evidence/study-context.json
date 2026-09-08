@@ -1,0 +1,18 @@
+{
+  "task": "Fix recurring 'Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY must be set' runtime error in the Docker container. Diagnosis: not a config regression — docker-compose.yml/Dockerfile were already correct from an earlier session fix. The currently-running image was built via a bare `docker compose up --build`/`docker compose build` (Compose's own default `.env` file interpolation, not `.env.local`), so the Next.js Edge Runtime middleware bundle was compiled with these build args empty and permanently frozen that way — env_file's correct runtime values never help because the value is already baked into the compiled middleware chunk. Root cause: Dockerfile:20-23 (ARG/ENV declarations with no validation) plus no build-time guard against the wrong invocation.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "a bare 'docker compose build' (no --env-file) now fails the build loudly with a clear message, instead of silently producing a broken image",
+    "'npm run docker:up' (correct invocation) still builds and runs successfully",
+    "the compiled Edge Runtime middleware bundle contains the real Supabase URL string after a correct build (verified by grep inside the container, not just env_file's runtime env)",
+    "/ and /login return 200 with no error in container logs after a correct docker:up run",
+    "npx tsc --noEmit, npx eslint, npx jest src all still pass (no regression to app code)"
+  ],
+  "touchpoints": [
+    "Dockerfile"
+  ],
+  "blastRadius": "Docker build process only — no application code touched. Adds a fail-fast RUN check in the builder stage; does not change any runtime behavior of a correctly-built image.",
+  "contracts": [
+    "docker-compose.yml and package.json's docker:up/docker:down scripts were already correct from an earlier session fix; this repair only adds the missing build-time guard"
+  ]
+}

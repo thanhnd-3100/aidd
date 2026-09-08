@@ -1,0 +1,27 @@
+{
+  "task": "Replace the plain /awards-information stub (from the home-screen plan) with the real Award Information page for MoMorph screen zFYDgyj_pD (SAA 2025): Keyvisual hero, section title, 6-item category nav with click-to-scroll + active state, 6 detailed award cards (real images/descriptions/quantities/prizes), reused Sun* Kudos block, and an authentication requirement.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "page renders hero (ROOT FURTHER / Sun* Annual Award 2025), section title (Sun* Annual Awards 2025 / Hệ thống giải thưởng SAA 2025), 6-item category nav in order, 6 award cards, and the reused Sun* Kudos block",
+    "each award card uses real MCP-sourced content (title, description where the design has one, quantity, prize value) with no invented text",
+    "category nav click scrolls to the matching section and sets that item active, clearing the previous active item",
+    "unauthenticated visitors are redirected to /login; authenticated visitors see the full page",
+    "existing homepage award-card hash-anchor links (/awards-information#slug) continue to resolve to the correct section",
+    "e2e-red-first test policy honored with RED evidence before implementation",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test (all specs) all pass",
+    "no regressions to the existing login and home screens"
+  ],
+  "touchpoints": [
+    "src/app/awards-information/page.tsx",
+    "src/components/awards-information/**",
+    "src/messages/awards-information.json",
+    "src/i18n/request.ts",
+    "e2e/awards-information.spec.ts"
+  ],
+  "blastRadius": "Replaces a stub page's content and adds an auth requirement to a route the homepage already links to publicly. No changes to login/home/todo/sun-kudos/admin-dashboard code. Reuses existing session-guard and KudosPromo components rather than adding new auth or promo logic.",
+  "contracts": [
+    "Route stays /awards-information, not the spec's literal /he-thong-giai — home-screen links unchanged",
+    "Auth guard enforced per spec, deviating from the prior public stub — accepted UX consequence: guests clicking an award card from the homepage now redirect to /login",
+    "9 of 10 E2E tests are a documented, accepted gap (whole-page auth requirement unobservable via Playwright's page.route()) backed by 10 RTL unit tests on the presentational component"
+  ]
+}

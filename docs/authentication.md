@@ -20,6 +20,10 @@ authorization added alongside the home screen (see [Roles and authorization](#ro
    exchange error → redirect to `/login?error=oauth_failed`.
 4. `/todo` (`src/app/todo/page.tsx`) is a stub landing page — it only calls
    `redirectIfUnauthenticated()` and renders a placeholder. The real feature isn't built yet.
+5. `/awards-information` (`src/app/awards-information/page.tsx`) guards the route the same way
+   `/todo` does — `await redirectIfUnauthenticated("/login")` before rendering — but renders real
+   content, the static `AwardInformationScreen` composition. It was previously a public stub; it is
+   now auth-gated. See [Known test gaps](#known-test-gaps) for how its E2E coverage is compensated.
 
 ## Three Supabase clients — why each exists
 
@@ -68,12 +72,13 @@ homepage.
 
 ### Stub routes
 
-Three routes exist as placeholders reached from the homepage, with no real content yet (see
-`plans/260907-1545-home-screen/clarifications.md` for scope decisions):
+Two routes still exist as placeholders reached from the homepage, with no real content yet (see
+`plans/260907-1545-home-screen/clarifications.md` for scope decisions). `/awards-information` was a
+third stub in that set but has since been built out with real content — see
+[Flow](#flow) step 5 and [Known test gaps](#known-test-gaps).
 
 | Route | File | Notes |
 |---|---|---|
-| `/awards-information` | `src/app/awards-information/page.tsx` | Renders one `id`-anchored `<section>` per award category so hash links from the homepage (e.g. `/awards-information#mvp`) resolve; no role gate. |
 | `/sun-kudos` | `src/app/sun-kudos/page.tsx` | "Coming soon" placeholder; no role gate. |
 | `/admin-dashboard` | `src/app/admin-dashboard/page.tsx` | "Coming soon" placeholder behind the admin gate described above. |
 
@@ -110,3 +115,17 @@ redirect) that Playwright cannot exercise without faking Supabase's exact sessio
 or triggering a real top-level navigation that would kill the test page. The underlying logic
 (`session-guard.ts`, `login-actions.ts`) is covered by Jest unit tests instead
 (`src/lib/auth/*.test.ts`).
+
+`e2e/awards-information.spec.ts` has the same root cause but a larger blast radius: because the
+*entire* route sits behind `redirectIfUnauthenticated()`, 9 of its 10 tests are `test.fixme`
+(only the unauthenticated-redirect case runs for real) — Playwright's `page.route()` stubs the
+browser fetch layer, not the server-side `supabase.auth.getUser()` call Next.js makes during SSR,
+so an authenticated-visitor scenario can't be faked at all, not even partially. The compensating
+coverage is RTL unit tests against the presentational component itself,
+`src/components/awards-information/award-information-screen.test.tsx`, which render
+`AwardInformationScreen` directly and assert the same content/interaction behavior (hero copy,
+6-category nav order, award card text, active-state switching) without going through the auth
+redirect. This is the same fixme-plus-unit-test shape as `/login`, just with the ratio flipped
+because the auth gate covers 100% of the page instead of a few interactive cases — a pattern worth
+reusing verbatim for any future screen that puts real content fully behind
+`redirectIfUnauthenticated()`.

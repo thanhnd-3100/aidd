@@ -1,0 +1,67 @@
+{
+  "commands": [
+    {
+      "command": "sh -c '! docker compose build'",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Negative-test wrapper: confirms the new guard correctly REJECTS a bare invocation (no --env-file) at build time instead of silently producing a broken image; the inner docker compose build itself exits 1 as intended, and the `!` inverts that to a passing check",
+      "ts": "2026-09-08T06:33:00.000Z"
+    },
+    {
+      "command": "docker compose --env-file .env.local build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Correct invocation builds successfully",
+      "ts": "2026-09-08T06:34:00.000Z"
+    },
+    {
+      "command": "npm run docker:up (backgrounded) + curl / and /login",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Both routes return HTTP 200, no error in container logs",
+      "ts": "2026-09-08T06:34:30.000Z"
+    },
+    {
+      "command": "docker exec aidd-web-1 grep real Supabase URL in compiled edge chunks",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Real URL string found baked into the middleware bundle (was 0 occurrences before the fix, now 1)",
+      "ts": "2026-09-08T06:35:00.000Z"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Typecheck clean, no app code changed",
+      "ts": "2026-09-08T06:35:20.000Z"
+    },
+    {
+      "command": "npx eslint src middleware.ts e2e",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Lint clean",
+      "ts": "2026-09-08T06:35:25.000Z"
+    },
+    {
+      "command": "npx jest src",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "15 suites, 65 tests passed, no regression",
+      "ts": "2026-09-08T06:35:30.000Z"
+    },
+    {
+      "command": "sh -c '! docker compose build --no-cache'",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Reproduced the user-reported error exactly (bare --no-cache build without --env-file trips the guard as intended, confirming it's the guard working correctly, not an app bug); negative-test wrapper inverts the expected exit 1 to a passing check",
+      "ts": "2026-09-08T06:44:00.000Z"
+    },
+    {
+      "command": "npm run docker:rebuild (backgrounded) + curl / and /login",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "New no-cache-safe script builds and runs cleanly; both routes return HTTP 200, no error in container logs",
+      "ts": "2026-09-08T06:46:00.000Z"
+    }
+  ]
+}

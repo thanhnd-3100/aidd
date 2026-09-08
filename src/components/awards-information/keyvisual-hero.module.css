@@ -1,0 +1,81 @@
+/* mm:313:8437 */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  min-height: 547px;
+  padding: 96px 144px;
+  overflow: hidden;
+  background-color: #00101a;
+  font-family: var(--font-montserrat);
+  text-align: center;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    12deg,
+    #00101a 23.7%,
+    rgba(0, 18, 29, 0.46) 48.34%,
+    rgba(0, 19, 32, 0.85) 100%
+  );
+}
+
+/* mm:2789:12915 */
+.logo {
+  height: auto;
+  max-width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* mm:313:8437 — Figma models the "ROOT FURTHER" title as a static image
+   (MM_MEDIA_Root Further Logo) with no TEXT style; rendered as real,
+   localizable, testable text alongside the logo graphic, matching the same
+   call made for the homepage hero (src/components/home/hero/hero-section.tsx)
+   and the login hero. */
+.title {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 800;
+  font-size: 57px;
+  line-height: 1.1;
+  letter-spacing: -0.25px;
+  color: #ffea9e;
+}
+
+.subtitle {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 64px 24px;
+    min-height: 420px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+  }
+}
