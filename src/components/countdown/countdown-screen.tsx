@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 import styles from "./countdown-screen.module.css";
 import { montserrat } from "./fonts";
 import { useCountdown } from "./use-countdown";
@@ -62,7 +64,18 @@ function CountdownUnit({ value, label }: UnitProps) {
  */
 export function CountdownScreen({ targetDatetime }: CountdownScreenProps) {
   const t = useTranslations("countdown");
-  const { days, hours, minutes } = useCountdown(targetDatetime);
+  const router = useRouter();
+  const { days, hours, minutes, isPast } = useCountdown(targetDatetime);
+
+  // The gate itself is server-authoritative (middleware re-checks on every
+  // navigation); this just gets a guest who is already sitting on this page
+  // off it once the tick-driven countdown reaches zero, instead of leaving
+  // them stuck looking at 00:00:00 forever.
+  useEffect(() => {
+    if (isPast) {
+      router.replace("/");
+    }
+  }, [isPast, router]);
 
   return (
     // mm:2268:35127

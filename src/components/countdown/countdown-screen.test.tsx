@@ -19,9 +19,15 @@ jest.mock("./use-countdown", () => ({
   useCountdown: (targetDatetime: string) => mockUseCountdown(targetDatetime),
 }));
 
+const mockReplace = jest.fn();
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: mockReplace }),
+}));
+
 describe("CountdownScreen", () => {
   beforeEach(() => {
     mockUseCountdown.mockReset();
+    mockReplace.mockReset();
   });
 
   it("renders zero-padded 2-digit values for a normal countdown", () => {
@@ -56,5 +62,31 @@ describe("CountdownScreen", () => {
     const values = screen.getAllByTestId("countdown-value");
     expect(values[0]).toHaveTextContent("99");
     expect(values[0]).not.toHaveTextContent("14");
+  });
+
+  it("navigates away to / once the countdown reaches isPast (bug: screen stayed stuck at 0)", () => {
+    mockUseCountdown.mockReturnValue({
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      isPast: true,
+    });
+
+    render(<CountdownScreen targetDatetime="2020-01-01T00:00:00.000Z" />);
+
+    expect(mockReplace).toHaveBeenCalledWith("/");
+  });
+
+  it("does not navigate away while the countdown is still running", () => {
+    mockUseCountdown.mockReturnValue({
+      days: 0,
+      hours: 0,
+      minutes: 1,
+      isPast: false,
+    });
+
+    render(<CountdownScreen targetDatetime="2026-12-31T18:30:00+07:00" />);
+
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 });
