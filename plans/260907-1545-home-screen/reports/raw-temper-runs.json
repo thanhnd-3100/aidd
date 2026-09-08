@@ -1,0 +1,12 @@
+[
+  {
+    "command": "npx playwright test e2e/home.spec.ts",
+    "exitCode": 0,
+    "summary": "10 passed, 4 skipped (fixme), 0 failed in 2.9s — HOME SCREEN GREEN"
+  },
+  {
+    "command": "npx eslint e2e/home.spec.ts",
+    "exitCode": 0,
+    "summary": "0 errors, 0 warnings — LINTING CLEAN"
+  }
+]

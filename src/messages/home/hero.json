@@ -1,0 +1,46 @@
+{
+  "vi": {
+    "hero": {
+      "title": "ROOT FURTHER",
+      "comingSoon": "Coming soon",
+      "countdown": {
+        "days": "DAYS",
+        "hours": "HOURS",
+        "minutes": "MINUTES"
+      },
+      "eventInfo": {
+        "timeLabel": "Thời gian:",
+        "timeValue": "26/12/2025",
+        "locationLabel": "Địa điểm:",
+        "locationValue": "Âu Cơ Art Center",
+        "note": "Tường thuật trực tiếp qua sóng Livestream"
+      },
+      "cta": {
+        "aboutAwards": "ABOUT AWARDS",
+        "aboutKudos": "ABOUT KUDOS"
+      }
+    }
+  },
+  "en": {
+    "hero": {
+      "title": "ROOT FURTHER",
+      "comingSoon": "Coming soon",
+      "countdown": {
+        "days": "DAYS",
+        "hours": "HOURS",
+        "minutes": "MINUTES"
+      },
+      "eventInfo": {
+        "timeLabel": "Time:",
+        "timeValue": "26/12/2025",
+        "locationLabel": "Venue:",
+        "locationValue": "Âu Cơ Art Center",
+        "note": "Livestreamed live on Facebook Group Sun* Family"
+      },
+      "cta": {
+        "aboutAwards": "ABOUT AWARDS",
+        "aboutKudos": "ABOUT KUDOS"
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+/* mm:3204:10152_Frame 486 */
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  max-width: 1152px;
+  margin-inline: auto;
+  padding: 96px 48px;
+  border-radius: 8px;
+}
+
+/* mm:3204:10153_Group 434 */
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rootText {
+  align-self: flex-end;
+  margin-right: 24px;
+  height: auto;
+  width: 65%;
+}
+
+.furtherText {
+  height: auto;
+  width: 100%;
+}
+
+/* mm:3204:10156 + mm:3204:10162 */
+.paragraph {
+  margin: 0;
+  width: 100%;
+  max-width: 1152px;
+  font-family: var(--font-montserrat), "Montserrat", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  text-align: justify;
+  white-space: pre-line;
+  color: #ffffff;
+}
+
+/* mm:3204:10161 */
+.quote {
+  margin: 0;
+  width: 100%;
+  max-width: 1152px;
+  font-family: var(--font-montserrat), "Montserrat", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 32px;
+  text-align: center;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 64px 24px;
+  }
+
+  .paragraph {
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  .quote {
+    font-size: 16px;
+    line-height: 26px;
+  }
+}

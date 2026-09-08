@@ -13,7 +13,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "docker:up": "docker compose --env-file .env.local up --build",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.6",

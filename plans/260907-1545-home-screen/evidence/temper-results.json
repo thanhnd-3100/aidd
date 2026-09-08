@@ -1,0 +1,39 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Typecheck clean across app + e2e",
+      "ts": "2026-09-07T09:48:00.000Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Production build succeeds; 8 routes incl. /, /awards-information, /sun-kudos, /admin-dashboard",
+      "ts": "2026-09-07T09:48:20.000Z"
+    },
+    {
+      "command": "npx eslint src middleware.ts e2e",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 lint errors/warnings across app and e2e sources",
+      "ts": "2026-09-07T09:47:50.000Z"
+    },
+    {
+      "command": "npx jest src",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "14 suites, 60 tests passed",
+      "ts": "2026-09-07T09:48:10.000Z"
+    },
+    {
+      "command": "npx playwright test e2e/home.spec.ts e2e/login.spec.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "14 passed, 7 skipped via documented test.fixme (home 10p/4s, login 4p/3s) — accepted, documented gaps",
+      "ts": "2026-09-07T09:48:40.000Z"
+    }
+  ]
+}

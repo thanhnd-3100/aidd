@@ -12,5 +12,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/todo"],
+  matcher: [
+    "/",
+    "/login",
+    "/todo",
+    "/awards-information",
+    "/sun-kudos",
+    "/admin-dashboard",
+  ],
 };
