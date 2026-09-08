@@ -1,0 +1,68 @@
+{
+  "vi": {
+    "header": {
+      "logoAlt": "Sun* Annual Awards 2025",
+      "nav": {
+        "about": "About SAA 2025",
+        "awards": "Awards Information",
+        "kudos": "Sun* Kudos"
+      },
+      "language": {
+        "vi": "VN",
+        "en": "EN"
+      },
+      "notification": {
+        "label": "Thông báo",
+        "empty": "Chưa có thông báo nào"
+      },
+      "account": {
+        "label": "Tài khoản",
+        "profile": "Hồ sơ",
+        "signOut": "Đăng xuất",
+        "adminDashboard": "Trang quản trị"
+      }
+    },
+    "footer": {
+      "logoAlt": "Sun* Annual Awards 2025",
+      "nav": {
+        "about": "About SAA 2025",
+        "awards": "Awards Information",
+        "kudos": "Sun* Kudos"
+      },
+      "copyright": "Bản quyền thuộc về Sun* © 2025"
+    }
+  },
+  "en": {
+    "header": {
+      "logoAlt": "Sun* Annual Awards 2025",
+      "nav": {
+        "about": "About SAA 2025",
+        "awards": "Awards Information",
+        "kudos": "Sun* Kudos"
+      },
+      "language": {
+        "vi": "VN",
+        "en": "EN"
+      },
+      "notification": {
+        "label": "Notifications",
+        "empty": "No notifications yet"
+      },
+      "account": {
+        "label": "Account",
+        "profile": "Profile",
+        "signOut": "Sign out",
+        "adminDashboard": "Admin Dashboard"
+      }
+    },
+    "footer": {
+      "logoAlt": "Sun* Annual Awards 2025",
+      "nav": {
+        "about": "About SAA 2025",
+        "awards": "Awards Information",
+        "kudos": "Sun* Kudos"
+      },
+      "copyright": "Copyright belongs to Sun* © 2025"
+    }
+  }
+}

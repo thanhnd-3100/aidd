@@ -1,0 +1,35 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "homepage renders header (logo, nav, language selector, auth-conditional notification bell and account icon), hero (title, countdown, event info, CTAs), Root Further content, 6-card awards grid, Sun* Kudos promo, widget button, and footer per MoMorph spec — confirmed via visual validation at desktop and mobile widths",
+    "countdown computes days/hours/minutes from a server-only EVENT_DATETIME env var, zero-padded, with a safe fallback on invalid/missing value — confirmed in use-countdown.ts and get-homepage-view-data.test.ts",
+    "CTA buttons and award cards navigate to /awards-information (with per-category hash anchors) and /sun-kudos stub routes — confirmed via e2e/home.spec.ts navigation assertions",
+    "unauthenticated visitors see no notification bell or account icon; authenticated visitors see both, with a visual-only placeholder notification panel — confirmed in header.tsx / account-menu.tsx and unit-tested auth resolution",
+    "account menu shows Profile/Sign out always, and Admin Dashboard only when the user's role is admin, sourced from a source the user cannot self-write client-side — confirmed: role read from Supabase app_metadata (service-role-writable only), privilege-escalation path via user_metadata found and closed during review, regression test added",
+    "/admin-dashboard redirects non-admin and unauthenticated visitors to / — confirmed in admin-dashboard/page.tsx and page.test.tsx",
+    "e2e-red-first test policy honored with RED evidence before implementation — confirmed: e2e/home.spec.ts written and run to real RED (exit 1, 13/14 failing) before any homepage UI/data code existed",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test (home + login specs) all pass — confirmed live this session, all exit 0",
+    "existing login screen and its tests remain unaffected — confirmed via combined e2e run (home 10p/4s, login 4p/3s, identical to pre-change baseline) and full jest suite (60/60)"
+  ],
+  "regressionChecked": [
+    "login screen's existing i18n/session-guard/Supabase client code untouched, both e2e specs run together with no cross-interference",
+    "middleware matcher extension (/, /awards-information, /sun-kudos, /admin-dashboard) doesn't break /login or /todo",
+    "default Next.js starter page fully replaced (page.module.css deleted) without leaving dead code",
+    "no other code path in this session or the delivered login screen reads or trusts user_metadata for authorization (grepped clean)",
+    "no client-reachable code path can write app_metadata (grepped clean — Supabase client SDK's updateUser() can only touch user_metadata)",
+    "CSS width fix (max-width to width) confirmed behaviorally identical sizing, no visual regression",
+    "merge-messages collision-warn guard confirmed correct against the current 4 disjoint partials, no false positives"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": [],
+  "findings": [],
+  "riskGate": {
+    "touchesSensitiveArea": true,
+    "signoffRequired": true,
+    "humanSignedOff": true
+  }
+}

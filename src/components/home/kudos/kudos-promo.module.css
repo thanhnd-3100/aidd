@@ -1,0 +1,155 @@
+.kudosPromo {
+  width: 100%;
+  font-family: var(--font-montserrat);
+}
+
+/* mm:I3390:10349;313:8415 */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  min-height: 500px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #0f0f0f;
+  padding: 54px 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* mm:I3390:10349;313:8416 */
+.background {
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* mm:I3390:10349;313:8419 */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  max-width: 457px;
+}
+
+/* mm:I3390:10349;313:8420 */
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* mm:I3390:10349;313:8421 */
+.label {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  color: #ffffff;
+}
+
+/* mm:I3390:10349;313:8422 */
+.title {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 57px;
+  line-height: 64px;
+  letter-spacing: -0.25px;
+  color: #ffea9e;
+}
+
+/* mm:I3390:10349;313:8423 */
+.description {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-align: justify;
+  white-space: pre-line;
+}
+
+/* mm:I3390:10349;313:8424 */
+.actions {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* mm:I3390:10349;313:8426 */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 4px;
+  background-color: #ffea9e;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ctaButton:hover {
+    background-color: #ffdd6e;
+  }
+}
+
+.ctaButton:focus-visible {
+  outline: 2px solid #ffea9e;
+  outline-offset: 2px;
+}
+
+/* mm:I3390:10349;313:8426;186:1568 */
+.ctaLabel {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: #00101a;
+  white-space: nowrap;
+}
+
+/* mm:I3390:10349;313:8426;186:1766 */
+.ctaIcon {
+  color: #00101a;
+  flex-shrink: 0;
+}
+
+/* mm:I3390:10349;313:8417 */
+.decorativeSlot {
+  display: none;
+}
+
+/* mm:I3390:10349;329:2948 */
+.wordmark {
+  position: absolute;
+  z-index: 0;
+  top: 40px;
+  right: 40px;
+  opacity: 0.9;
+}
+
+@media (max-width: 720px) {
+  .card {
+    padding: 32px 24px;
+    min-height: unset;
+  }
+
+  .title {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .wordmark {
+    display: none;
+  }
+}

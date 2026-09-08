@@ -1,0 +1,84 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  min-height: 880px;
+  padding: 96px 144px;
+  overflow: hidden;
+}
+
+/* mm:2167:9028 */
+.keyVisual {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: url("/home/hero/keyvisual-bg.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* mm:2167:9029 */
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    12deg,
+    #00101a 23.7%,
+    rgba(0, 18, 29, 0.46) 38.34%,
+    rgba(0, 19, 32, 0) 48.92%
+  );
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 1224px;
+}
+
+/* mm:2167:9032 — Figma models this as a static image (MM_MEDIA_Root Further
+   Logo) with no TEXT style; rendered as real, localizable, testable text
+   instead, matching the same call made for the login screen's h1 (see
+   src/components/login/login-hero.tsx). */
+.title {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 800;
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: #ffffff;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 64px 24px;
+    min-height: 720px;
+  }
+
+  .content {
+    gap: 24px;
+  }
+
+  .title {
+    font-size: 48px;
+    letter-spacing: -1px;
+  }
+
+  .body {
+    gap: 24px;
+  }
+}

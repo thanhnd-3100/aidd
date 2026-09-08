@@ -1,0 +1,36 @@
+{
+  "task": "Implement the '/' homepage for MoMorph screen i87tDx10uM (SAA 2025): auth-aware header/footer, hero with live countdown + CTAs, Root Further content block, 6-card awards grid, Sun* Kudos promo, floating widget button; add role field and 3 stub destination routes.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "homepage renders header (logo, nav, language selector, auth-conditional notification bell and account icon), hero (title, countdown, event info, CTAs), Root Further content, 6-card awards grid, Sun* Kudos promo, widget button, and footer per MoMorph spec",
+    "countdown computes days/hours/minutes from a server-only EVENT_DATETIME env var, zero-padded, with a safe fallback on invalid/missing value",
+    "CTA buttons and award cards navigate to /awards-information (with per-category hash anchors) and /sun-kudos stub routes",
+    "unauthenticated visitors see no notification bell or account icon; authenticated visitors see both, with a visual-only placeholder notification panel",
+    "account menu shows Profile/Sign out always, and Admin Dashboard only when the user's role is admin, sourced from a source the user cannot self-write client-side",
+    "/admin-dashboard redirects non-admin and unauthenticated visitors to /",
+    "e2e-red-first test policy honored with RED evidence before implementation",
+    "npx tsc --noEmit, npm run build, npm run lint, npx jest src, npx playwright test (home + login specs) all pass",
+    "existing login screen and its tests remain unaffected"
+  ],
+  "touchpoints": [
+    "src/app/page.tsx",
+    "src/app/awards-information/page.tsx",
+    "src/app/sun-kudos/page.tsx",
+    "src/app/admin-dashboard/page.tsx",
+    "src/components/home/**",
+    "src/lib/home/get-homepage-view-data.ts",
+    "src/lib/auth/get-user-role.ts",
+    "src/i18n/request.ts",
+    "src/i18n/merge-messages.ts",
+    "src/messages/home/*.json",
+    "middleware.ts",
+    "e2e/home.spec.ts"
+  ],
+  "blastRadius": "Replaces the default Next.js starter homepage; extends (not replaces) the login-screen plan's Supabase/i18n/Playwright infra. Adds a role field read from Supabase app_metadata (new authorization surface) and 3 new stub routes. Existing /login, /todo, /auth/callback untouched and verified via full regression run of both e2e specs together plus the full jest suite.",
+  "contracts": [
+    "/awards-information, /sun-kudos, /admin-dashboard are stub routes; full content is future work",
+    "notification bell is visual-only (no backend); widget button menu is a placeholder shell",
+    "role is sourced from Supabase app_metadata (service-role-writable only), never user_metadata (client-writable) — closes a privilege-escalation path found and fixed during review",
+    "4 of 14 home E2E tests and 3 of 7 login E2E tests are documented, accepted gaps (server-side auth/OAuth flows unobservable via Playwright's browser-level page.route()), backed by unit tests"
+  ]
+}

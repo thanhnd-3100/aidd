@@ -13,6 +13,22 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, so they
+# must be passed as build args (via docker-compose.yml's build.args), not just
+# set at container runtime.
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+# GOOGLE_CLIENT_ID/SECRET are not read by this app (Supabase's own
+# auth.external.google provider reads them) and aren't needed by `next
+# build`, but are accepted here so docker-compose.yml can pass them as
+# build args without Docker warning about unconsumed args.
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_CLIENT_SECRET
+
 RUN npm run build
 
 # ---- Runtime ----
