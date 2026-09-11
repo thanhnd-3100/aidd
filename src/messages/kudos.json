@@ -1,0 +1,64 @@
+{
+  "vi": {
+    "board": {
+      "title": "Hệ thống ghi nhận và cảm ơn",
+      "wordmarkAlt": "KUDOS",
+      "ghiNhanPrompt": "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?",
+      "feedEyebrow": "Sun* Annual Awards 2025",
+      "feedHeading": "ALL KUDOS",
+      "emptyState": "Hiện tại chưa có Kudos nào.",
+      "loadMore": "Xem thêm"
+    },
+    "composer": {
+      "title": "Gửi lời cám ơn và ghi nhận đến đồng đội",
+      "recipient": {
+        "label": "Người nhận",
+        "placeholder": "Tìm kiếm"
+      },
+      "content": {
+        "label": "Nội dung",
+        "placeholder": "Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!"
+      },
+      "hashtags": {
+        "label": "Hashtag",
+        "placeholder": "Nhập hashtag rồi nhấn Enter",
+        "maxHint": "Tối đa 5 hashtag",
+        "remove": "Remove hashtag {tag}"
+      },
+      "cancel": "Hủy",
+      "submit": "Gửi",
+      "submitting": "Đang gửi..."
+    }
+  },
+  "en": {
+    "board": {
+      "title": "Hệ thống ghi nhận và cảm ơn",
+      "wordmarkAlt": "KUDOS",
+      "ghiNhanPrompt": "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?",
+      "feedEyebrow": "Sun* Annual Awards 2025",
+      "feedHeading": "ALL KUDOS",
+      "emptyState": "Hiện tại chưa có Kudos nào.",
+      "loadMore": "Load more"
+    },
+    "composer": {
+      "title": "Gửi lời cám ơn và ghi nhận đến đồng đội",
+      "recipient": {
+        "label": "Người nhận",
+        "placeholder": "Tìm kiếm"
+      },
+      "content": {
+        "label": "Nội dung",
+        "placeholder": "Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!"
+      },
+      "hashtags": {
+        "label": "Hashtag",
+        "placeholder": "Nhập hashtag rồi nhấn Enter",
+        "maxHint": "Tối đa 5 hashtag",
+        "remove": "Remove hashtag {tag}"
+      },
+      "cancel": "Hủy",
+      "submit": "Gửi",
+      "submitting": "Đang gửi..."
+    }
+  }
+}
