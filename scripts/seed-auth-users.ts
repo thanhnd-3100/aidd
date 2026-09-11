@@ -12,11 +12,11 @@
 // Usage: node scripts/seed-auth-users.ts
 
 import { createClient } from '@supabase/supabase-js';
+import { DEV_USERS, type DevSeedUser } from './dev-seed-user-list.ts';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const DEV_PASSWORD = process.env.SUPABASE_DEV_USER_PASSWORD ?? 'kudos-dev-password-123';
 
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error(
@@ -26,31 +26,6 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-// Metadata must match `supabase/seeds/dev/001_kudos_dev_seed.sql` exactly - both write the
-// same three identities, keyed by the same fixed UUIDs so FKs never need re-keying.
-export const DEV_USERS = [
-  {
-    id: '11111111-1111-1111-1111-111111111111',
-    email: 'an.nguyen@sun-asterisk.dev',
-    password: DEV_PASSWORD,
-    full_name: 'An Nguyen',
-    avatar_url: 'https://i.pravatar.cc/150?u=an-nguyen',
-  },
-  {
-    id: '22222222-2222-2222-2222-222222222222',
-    email: 'binh.tran@sun-asterisk.dev',
-    password: DEV_PASSWORD,
-    full_name: 'Binh Tran',
-    avatar_url: 'https://i.pravatar.cc/150?u=binh-tran',
-  },
-  {
-    id: '33333333-3333-3333-3333-333333333333',
-    email: 'chi.le@sun-asterisk.dev',
-    password: DEV_PASSWORD,
-    full_name: 'Chi Le',
-    avatar_url: 'https://i.pravatar.cc/150?u=chi-le',
-  },
-] as const;
 
 const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
@@ -60,7 +35,7 @@ const anon = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-async function upsertUser(user: (typeof DEV_USERS)[number]): Promise<void> {
+async function upsertUser(user: DevSeedUser): Promise<void> {
   const { error: createError } = await admin.auth.admin.createUser({
     id: user.id,
     email: user.email,
@@ -100,7 +75,7 @@ async function upsertUser(user: (typeof DEV_USERS)[number]): Promise<void> {
   console.log(`updated: ${user.email}`);
 }
 
-async function verifyLogin(user: (typeof DEV_USERS)[number]): Promise<void> {
+async function verifyLogin(user: DevSeedUser): Promise<void> {
   const { error } = await anon.auth.signInWithPassword({
     email: user.email,
     password: user.password,

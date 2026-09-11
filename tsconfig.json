@@ -6,6 +6,9 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // scripts/*.ts run directly under Node 24 type-stripping, which requires the
+    // explicit .ts extension on relative imports. Safe with noEmit.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

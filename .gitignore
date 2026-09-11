@@ -12,6 +12,7 @@
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/playwright/.auth/
 
 # next.js
 /.next/
@@ -41,3 +42,7 @@ yarn-error.log*
 next-env.d.ts
 
 .claude/
+
+# supabase cli local state
+supabase/.temp/
+supabase/.branches/
