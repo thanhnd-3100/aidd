@@ -1,0 +1,12 @@
+{
+  "commands": [
+    { "command": "npx tsc --noEmit", "exitCode": 0, "status": "pass", "summary": "no type errors across src, e2e and scripts", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "npx jest", "exitCode": 0, "status": "pass", "summary": "27 suites, 180 tests passed; e2e/ correctly ignored", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "npx eslint src e2e scripts", "exitCode": 0, "status": "pass", "summary": "0 errors, 4 no-img-element warnings (pre-existing baseline)", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "npx next build", "exitCode": 0, "status": "pass", "summary": "production build compiled; confirms the client/server import boundary fix holds outside dev", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "npx playwright test", "exitCode": 0, "status": "pass", "summary": "34 passed, 22 skipped, 0 failed across setup/chromium-public/chromium-auth", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "npx playwright test e2e/kudos-rls.spec.ts --project=setup --project=chromium-auth", "exitCode": 0, "status": "pass", "summary": "4 RLS assertions with a real user access token; self-like and both forgery attempts return 42501/403", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "npm run db:seed:users", "exitCode": 0, "status": "pass", "summary": "3 users updated, 3 logins verified after the env-file fix", "ts": "2026-09-11T05:32:41Z" },
+    { "command": "docker exec -i supabase_db_agentic-coding-live-demo psql -U postgres -d postgres -v ON_ERROR_STOP=1 < supabase/migrations/20260911140000_kudos_likes_block_self_like.sql", "exitCode": 0, "status": "pass", "summary": "re-applied a second time: DROP POLICY / CREATE POLICY, proving the migration is idempotent", "ts": "2026-09-11T05:32:41Z" }
+  ]
+}

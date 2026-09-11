@@ -1,0 +1,176 @@
+/* mm:3127:21871 */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 40px 40px 16px 40px;
+  border-radius: 24px;
+  background-color: #fff8e1;
+  font-family: var(--font-montserrat);
+}
+
+/* mm:I3127:21871;256:4857 */
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+}
+
+/* mm:I3127:21871;256:4858 / 256:4860 */
+.person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+}
+
+/* mm:I3127:21871;256:4858;256:4734 / 256:4860;256:4734 */
+.avatar {
+  width: 64px;
+  height: 64px;
+  border: 1.869px solid #fff;
+  border-radius: 64px;
+  object-fit: cover;
+  background-color: #eee;
+}
+
+/* mm:I3127:21871;256:4858;256:4735 / 256:4860;256:4735 */
+.personName {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: #00101a;
+  text-align: center;
+}
+
+/* mm:I3127:21871;256:5147 */
+.sendIcon {
+  flex-shrink: 0;
+  align-self: center;
+  width: 32px;
+  height: 32px;
+  color: #00101a;
+}
+
+/* mm:I3127:21871;256:5192 / 256:7496 */
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ffea9e;
+}
+
+/* mm:I3127:21871;256:5645 */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+/* mm:I3127:21871;256:5229 */
+.timestamp {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: #999;
+}
+
+/* mm:I3127:21871;662:11382 */
+.contentBox {
+  width: 100%;
+  padding: 16px 24px;
+  border: 1px solid #ffea9e;
+  border-radius: 12px;
+  background-color: rgba(255, 234, 158, 0.4);
+}
+
+/* mm:I3127:21871;256:5156 — plain CSS line-clamp per integration contract */
+.contentText {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 32px;
+  text-align: justify;
+  color: #00101a;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* mm:I3127:21871;256:5158 */
+.hashtagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* mm:I3127:21871;256:5159 */
+.hashtagChip {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: #d4271d;
+}
+
+/* mm:I3127:21871;256:5194 */
+.actions {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* mm:I3127:21871;256:5175 */
+.likeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #00101a;
+}
+
+.likeButton:disabled {
+  cursor: not-allowed;
+  color: #999;
+  opacity: 0.6;
+}
+
+/* mm:I3127:21871;256:5174 */
+.likeCount {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+/* mm:I3127:21871;256:5171 */
+.heartIcon {
+  width: 32px;
+  height: 32px;
+  color: #d4271d;
+}
+
+.likeButton:disabled .heartIcon {
+  color: #999;
+}

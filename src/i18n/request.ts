@@ -58,6 +58,18 @@ async function loadCountdownMessages(locale: Locale): Promise<MessagesTree> {
 }
 
 /**
+ * The Sun* Kudos board owns a single self-contained partial file shaped
+ * `{ vi: {...}, en: {...} }` with `board`/`composer` sub-keys — same
+ * straightforward pattern as `awards-information`/`countdown`, merged
+ * directly under its own top-level `kudos` key.
+ */
+async function loadKudosMessages(locale: Locale): Promise<MessagesTree> {
+  const partial = (await import("../messages/kudos.json"))
+    .default as LocalizedPartial;
+  return partial[locale];
+}
+
+/**
  * Cookie-only locale resolution (no `[locale]` URL segment): reads
  * `NEXT_LOCALE`, falling back to `defaultLocale` when absent or invalid.
  *
@@ -77,6 +89,7 @@ export default getRequestConfig(async () => {
   const homeMessages = await loadHomeMessages(locale);
   const awardsInformationMessages = await loadAwardsInformationMessages(locale);
   const countdownMessages = await loadCountdownMessages(locale);
+  const kudosMessages = await loadKudosMessages(locale);
 
   return {
     locale,
@@ -84,6 +97,7 @@ export default getRequestConfig(async () => {
       home: homeMessages,
       "awards-information": awardsInformationMessages,
       countdown: countdownMessages,
+      kudos: kudosMessages,
     }),
   };
 });

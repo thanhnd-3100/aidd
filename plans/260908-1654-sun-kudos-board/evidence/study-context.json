@@ -1,0 +1,33 @@
+{
+  "task": "Implement a reduced-scope Sun* Kudos board for MoMorph screens MaZUn5xHXZ (live board) and ihQ26W78P2 (Viet Kudo composer modal), SAA 2025. Replace the '/sun-kudos' stub with a public feed (banner, vertical kudos cards, Load more pagination, empty state) and an auth-gated composer modal (recipient autocomplete, plain-text content, free-text hashtag chips). Like/unlike with 'no self-like' and 'one like per user' rules. This is the project's first real DB schema: supabase/migrations was empty before this delivery.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "/sun-kudos renders a static banner, a 'Ghi nhận' trigger pill, and a vertical kudos feed with Load more pagination, publicly viewable with no auth guard on the page itself",
+    "Empty state renders the exact copy 'Hiện tại chưa có Kudos nào.' when the feed has zero rows",
+    "Unauthenticated click on the 'Ghi nhận' pill or a heart icon redirects to /login; authenticated click opens the composer modal or toggles a like",
+    "Composer modal: recipient search-as-you-type (required), plain textarea content (required), free-text hashtag chips min 1 / max 5 (required), 'Gửi' disabled until all three are filled, 'Hủy' discards and closes",
+    "On successful submit, the composer closes and the feed refetches page 1 to show the new kudos (not optimistic prepend, per clarifications.md)",
+    "Like/unlike: a user cannot like their own kudos (heart disabled), one like per user per kudos enforced by the kudos_likes composite primary key, sender_id/user_id always derived server-side from auth.uid(), never client-supplied",
+    "First DB schema for this project: profiles/kudos/kudos_likes tables + auth.users sync trigger + RLS (public read, own-row-only write) written in supabase/migrations/20260908165400_kudos_schema.sql, deliberately NOT applied to any live database in this session (no Supabase CLI available, user applies it themselves)",
+    "listKudos fails soft to an empty page (with error logging) on any Supabase error, including the pre-migration 'relation does not exist' state, so the board always renders correctly even before the user applies the migration",
+    "e2e-red-first test policy honored: e2e/sun-kudos.spec.ts authored before implementation, genuine RED confirmed (exit 1, 4 real assertion failures against the stub page) before any board/composer/data-layer code existed",
+    "Scenarios requiring server-side auth stubbing are documented test.fixme() skips matching the established e2e/home.spec.ts precedent, not faked passes",
+    "npx tsc --noEmit, npm run build, npx eslint src e2e, npx jest src, npx playwright test (full suite) all pass with zero regressions to login/home/awards-information/countdown",
+    "Explicitly out of scope per the Scope Challenge (clarifications.md): highlight carousel, hashtag/department filters, spotlight word-cloud, sidebar stats/leaderboards/Secret Box, special-day double-hearts, anonymous send, image upload, rich-text formatting/@mention, copy-link/detail-page/profile-page navigation, star badge tiers"
+  ],
+  "touchpoints": [
+    "supabase/migrations/20260908165400_kudos_schema.sql", "supabase/seeds/dev/001_kudos_dev_seed.sql",
+    "src/lib/kudos/list-kudos.ts", "src/lib/kudos/create-kudos.ts", "src/lib/kudos/toggle-like.ts", "src/lib/kudos/search-profiles.ts",
+    "src/components/kudos/board/**", "src/components/kudos/composer/**",
+    "src/messages/kudos.json", "src/i18n/request.ts",
+    "src/app/sun-kudos/page.tsx (replaces stub)", "src/app/sun-kudos/sun-kudos-client.tsx",
+    "e2e/sun-kudos.spec.ts", "docs/authentication.md"
+  ],
+  "blastRadius": "Contained to a new feature area (/sun-kudos) plus one new DB schema file. No changes to existing routes' behavior — verified via full regression (all e2e specs, full jest suite, build) with zero regressions to login/home/awards-information/countdown. The DB migration is additive and not yet applied, so it has zero runtime blast radius until the user applies it.",
+  "contracts": [
+    "Server actions (createKudos/toggleLike) derive sender_id/user_id exclusively from server-side auth.uid() via the Supabase server client — never trust a client-supplied id (verified by reviewer, grepped for any client-supplied id param, none found)",
+    "'Can't like own kudos' and 'one like per user' are app-layer + DB composite-PK enforced respectively, not a DB CHECK constraint for the former, per clarifications.md's explicit design decision",
+    "Contract-mapping shims between phases (receiverId/recipientId, KudosProfile/RecipientOption, nested-to-flat Kudos row shape) live in sun-kudos-client.tsx and were independently verified field-correct by the reviewer",
+    "A race condition where two parallel MoMorph UI agents (A1, A2) each independently created src/messages/kudos.json was caught by the orchestrator before integration; both key sets (board.*, composer.*) were manually merged back in and reverified (23/23 component tests) before Phase I1 began"
+  ]
+}

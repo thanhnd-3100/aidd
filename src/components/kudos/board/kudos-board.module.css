@@ -1,0 +1,210 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  padding: 0 144px 96px;
+  background-color: #00101a;
+  font-family: var(--font-montserrat);
+}
+
+/* mm:2940:13436 */
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  max-width: 1152px;
+  padding-top: 64px;
+  position: relative;
+}
+
+/* mm:2940:13439 */
+.title {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 44px;
+  color: #ffea9e;
+}
+
+/* mm:2940:13440 */
+.wordmark {
+  width: 100%;
+  max-width: 593px;
+  height: auto;
+}
+
+/* mm:2940:13449 */
+.ghiNhanButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 738px;
+  padding: 24px 16px;
+  border: 1px solid #998c5f;
+  border-radius: 68px;
+  background-color: rgba(255, 234, 158, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ghiNhanButton:hover {
+    background-color: rgba(255, 234, 158, 0.2);
+  }
+}
+
+.ghiNhanButton:focus-visible {
+  outline: 2px solid #ffea9e;
+  outline-offset: 2px;
+}
+
+/* mm:I2940:13449;186:2759 */
+.ghiNhanIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: #ffea9e;
+}
+
+/* mm:I2940:13449;186:2760 */
+.ghiNhanText {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: #fff;
+  text-align: left;
+}
+
+/* mm:2940:13475 (C_All kudos) */
+.feed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  width: 100%;
+  max-width: 1152px;
+}
+
+/* mm:2940:14221 */
+.feedHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+/* mm:2940:14222 */
+.feedEyebrow {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  color: #fff;
+}
+
+/* mm:2940:14223 */
+.feedDivider {
+  width: 100%;
+  height: 1px;
+  background-color: #2e3940;
+}
+
+/* mm:2940:14225 */
+.feedHeading {
+  margin: 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 57px;
+  line-height: 64px;
+  letter-spacing: -0.25px;
+  color: #ffea9e;
+}
+
+/* mm:2940:13482 (C.2_Danh sách lời cảm ơn) */
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+  max-width: 680px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.emptyState {
+  margin: 0;
+  padding: 40px 0;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+}
+
+/* Not in the Figma mock — the design shows a fully-populated feed with no
+   pagination control. "Load more" is a functional requirement from
+   clarifications.md (offset-based pagination), styled to match the
+   existing secondary-button token set (border/background from
+   .ghiNhanButton) rather than inventing a new visual language. */
+.loadMoreButton {
+  align-self: center;
+  padding: 16px 32px;
+  border: 1px solid #998c5f;
+  border-radius: 68px;
+  background-color: rgba(255, 234, 158, 0.1);
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .loadMoreButton:hover {
+    background-color: rgba(255, 234, 158, 0.2);
+  }
+}
+
+.loadMoreButton:focus-visible {
+  outline: 2px solid #ffea9e;
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .board {
+    padding: 0 24px 64px;
+  }
+
+  .banner {
+    padding-top: 40px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .feedHeading {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .ghiNhanButton {
+    padding: 16px;
+  }
+}

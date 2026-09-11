@@ -1,0 +1,12 @@
+[
+  {
+    "command": "npx playwright test e2e/sun-kudos.spec.ts",
+    "exitCode": 1,
+    "summary": "4 failed (banner, empty-state feed, Ghi nhận button, unauthenticated redirect), 2 passed (heart redirect edge case, regression check), 6 skipped via test.fixme() for server-side auth limitation"
+  },
+  {
+    "command": "npx playwright test e2e/home.spec.ts",
+    "exitCode": 0,
+    "summary": "10 passed, 4 skipped via test.fixme(), regression check verified: home ABOUT KUDOS button still links to /sun-kudos"
+  }
+]

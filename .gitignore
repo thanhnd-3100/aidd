@@ -12,6 +12,7 @@
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/playwright/.auth/
 
 # next.js
 /.next/
@@ -41,3 +42,13 @@ yarn-error.log*
 next-env.d.ts
 
 .claude/
+
+# supabase cli local state
+supabase/.temp/
+supabase/.branches/
+
+# e2e-only env (local Supabase stack)
+.env.e2e
+.env*
+# nhưng giữ các file mẫu (không chứa giá trị thật)
+!.env*.example

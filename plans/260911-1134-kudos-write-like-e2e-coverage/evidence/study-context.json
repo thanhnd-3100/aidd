@@ -1,0 +1,41 @@
+{
+  "task": "Give kudos write + like executable browser proof: real server-side auth in Playwright, and close the self-like RLS hole.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "local Supabase password login returns a real session",
+    "the three dev seed users are loginable and their profiles rows exist",
+    "an authenticated Playwright session reaches the server-side getUser check and opens the composer instead of redirecting to /login",
+    "the auth cookie is never hand-serialized by name or chunk index",
+    "the database rejects a self-like, still allows liking someone else's kudos, and still rejects forged sender_id and forged like user_id",
+    "no secret is present in any tracked file",
+    "tsc, jest, eslint, next build and the full playwright suite all pass"
+  ],
+  "touchpoints": [
+    "supabase/config.toml",
+    "supabase/migrations/20260911140000_kudos_likes_block_self_like.sql",
+    "supabase/seeds/dev/001_kudos_dev_seed.sql",
+    "scripts/seed-auth-users.ts",
+    "scripts/dev-seed-user-list.ts",
+    "package.json",
+    "tsconfig.json",
+    "jest.config.ts",
+    "playwright.config.ts",
+    "e2e/auth.setup.ts",
+    "e2e/sun-kudos-public.spec.ts",
+    "e2e/sun-kudos-authenticated.spec.ts",
+    "e2e/kudos-rls.spec.ts",
+    "src/app/sun-kudos/kudos-view-model.ts",
+    "src/app/sun-kudos/page.tsx",
+    "src/app/sun-kudos/sun-kudos-client.tsx",
+    "src/lib/kudos/toggle-like.ts",
+    ".env.local.example",
+    ".gitignore"
+  ],
+  "blastRadius": "Test infrastructure plus one production bug fix (the client-reference-proxy import that made the kudos feed silently empty) and one RLS tightening. Production sign-in stays Google-OAuth-only; the email-login flag is local dev config. The RLS change narrows kudos_likes inserts, so any caller that previously self-liked now gets 42501.",
+  "contracts": [
+    "kudos_likes_insert_own RLS policy (narrowed, forward-only migration)",
+    "createKudos / toggleLike server action signatures (unchanged)",
+    "listKudos PostgREST query shape (unchanged; the limit=NaN defect was in the caller)",
+    "playwright project names setup / chromium-public / chromium-auth (new)"
+  ]
+}

@@ -24,6 +24,10 @@ authorization added alongside the home screen (see [Roles and authorization](#ro
    `/todo` does — `await redirectIfUnauthenticated("/login")` before rendering — but renders real
    content, the static `AwardInformationScreen` composition. It was previously a public stub; it is
    now auth-gated. See [Known test gaps](#known-test-gaps) for how its E2E coverage is compensated.
+6. `/sun-kudos` (`src/app/sun-kudos/page.tsx`) stays **public** — no `redirectIfUnauthenticated()`
+   call — but gates its two write actions ("Ghi nhận" and the like button) client-side. See
+   [Action-level gating](#action-level-gating-client-side-redirect) below for how this differs from
+   the page-level pattern above.
 
 ## Three Supabase clients — why each exists
 
@@ -100,6 +104,25 @@ mid-suite would need a second Playwright server per case).
 `redirectIfUnauthenticated()`. Both call `supabase.auth.getUser()` server-side and treat any error
 as "not logged in" — callers never distinguish "no session" from "check failed".
 
+### Action-level gating (client-side redirect)
+
+`/sun-kudos` introduces a second gating shape, distinct from the page-level `session-guard.ts`
+pattern above: the **page** stays public, and only specific **actions** on it require a session.
+
+`src/app/sun-kudos/page.tsx` reads the current user id server-side (via
+`supabase.auth.getUser()`) without redirecting — any lookup failure (missing env vars, network
+error, no session) resolves to `null`, i.e. "unauthenticated," never a thrown error, since the page
+must render either way. That id is passed down as a plain prop to the client component
+`src/app/sun-kudos/sun-kudos-client.tsx`, which wraps its two write actions ("Ghi nhận" and the
+heart/like button) in a local `requireAuth(action)` helper: `null` user id →
+`router.push("/login")` via `next/navigation`; otherwise the action runs. No middleware or
+server-side redirect is involved — the gate is a client-side conditional on a value already
+resolved server-side.
+
+Use `session-guard.ts` when the whole route requires a session (`/todo`, `/awards-information`).
+Use this pattern when the route itself must stay browsable by anyone and only specific
+interactions are privileged (`/sun-kudos`'s board is public; only writing or liking is not).
+
 ## Roles and authorization
 
 `src/lib/auth/get-user-role.ts` exports `UserRole = "user" | "admin"` and `getUserRole(user)`,
@@ -130,14 +153,13 @@ homepage.
 
 ### Stub routes
 
-Two routes still exist as placeholders reached from the homepage, with no real content yet (see
-`plans/260907-1545-home-screen/clarifications.md` for scope decisions). `/awards-information` was a
-third stub in that set but has since been built out with real content — see
-[Flow](#flow) step 5 and [Known test gaps](#known-test-gaps).
+One route still exists as a placeholder reached from the homepage, with no real content yet (see
+`plans/260907-1545-home-screen/clarifications.md` for scope decisions). `/awards-information` and
+`/sun-kudos` were also stubs in that original set but have since been built out with real content —
+see [Flow](#flow) steps 5–6 and [Known test gaps](#known-test-gaps).
 
 | Route | File | Notes |
 |---|---|---|
-| `/sun-kudos` | `src/app/sun-kudos/page.tsx` | "Coming soon" placeholder; no role gate. |
 | `/admin-dashboard` | `src/app/admin-dashboard/page.tsx` | "Coming soon" placeholder behind the admin gate described above. |
 
 `middleware.ts`'s catch-all matcher (see [middleware location and matcher](#middlewarets-location-and-matcher))
@@ -189,3 +211,51 @@ redirect. This is the same fixme-plus-unit-test shape as `/login`, just with the
 because the auth gate covers 100% of the page instead of a few interactive cases — a pattern worth
 reusing verbatim for any future screen that puts real content fully behind
 `redirectIfUnauthenticated()`.
+
+`e2e/sun-kudos.spec.ts` was split into `e2e/sun-kudos-public.spec.ts` (unauthenticated) and
+`e2e/sun-kudos-authenticated.spec.ts`, because `/login` calls `redirectIfAuthenticated("/todo")`
+— an authenticated Playwright context can never load `/login`, so the two states need separate
+specs entirely, not just separate `test.describe` blocks in one file.
+
+`sun-kudos-public.spec.ts` runs its 6 cases for real, including the two unauthenticated-redirect
+assertions ("Ghi nhận" and heart click → `/login`), since that path never calls `getUser()`
+client-side. `sun-kudos-authenticated.spec.ts` now has a real authenticated `storageState`
+available (see [`e2e/auth.setup.ts`](#e2eauthsetupts-real-session-storagestate) below), so one
+case — clicking "Ghi nhận" while authenticated opens the composer dialog — runs for real as the
+smoke test proving the session mechanic works end to end. The remaining 6 `test.fixme` cases
+(form validation/hashtag limit, submit success/error, like/unlike toggling, self-like button
+disabled) still stub `getUser()` via `page.route()` rather than using the new storageState, so
+they keep failing for the original reason: `page.route()` intercepts browser fetch, not the
+server-side `supabase.auth.getUser()` call Next.js makes during SSR. Converting them to use the
+real session is unstarted work, not a limitation of the mechanism itself anymore. Compensating
+coverage for the untouched fixme cases lives in `src/app/sun-kudos/sun-kudos-client.test.tsx`
+(composer open/redirect, like toggle, submit success/error, load more) plus
+`src/components/kudos/composer/kudos-composer.test.tsx` and
+`src/components/kudos/board/kudos-board.test.tsx` for the presentational validation/interaction
+details.
+
+### `e2e/auth.setup.ts` — real session storageState
+
+Added alongside the split above: a Playwright `setup` project
+(`playwright.config.ts`) runs `e2e/auth.setup.ts` first, which signs in seed user "An" (first
+entry of `scripts/dev-seed-user-list.ts`'s `DEV_USERS`) against the actual Supabase auth backend
+and writes two gitignored files under `playwright/.auth/`: `an.json` (a real `storageState` —
+cookies only, no literal cookie name hardcoded, since `@supabase/ssr`'s own `setAll` decides
+that) and `an-token.json` (the raw access token, for tests that call PostgREST directly rather
+than through cookies). The `chromium-auth` project loads `an.json` as its `storageState` and runs
+both `sun-kudos-authenticated.spec.ts` and `kudos-rls.spec.ts` (the latter proves the RLS rules —
+including the self-like block above — using the raw token from `an-token.json`, not the cookie
+jar). This is the first time this project has had a way around the "`page.route()` can't stub
+server-side auth" limitation described throughout this section. `chromium-public` runs with no
+stored state, for the unauthenticated specs. Both projects run against
+`webServer.env.PRELAUNCH_GATE_ENABLED=false`, so the prelaunch gate never intercepts either
+project's requests — `auth.setup.ts` also independently asserts the gate is off before signing in,
+since a stale dev server with `reuseExistingServer` could otherwise leave every "authenticated"
+test actually running against `/countdown`.
+
+Getting a real session for `auth.setup.ts` to sign in with requires the dev user to actually be
+loginable. `supabase/seeds/dev/001_kudos_dev_seed.sql`'s raw `auth.users` inserts alone are not
+enough — the `npm run db:seed:users` script (`scripts/seed-auth-users.ts`) creates the three dev
+identities through the Supabase Admin API instead, and must run *before* the SQL seed
+(`npm run db:reset:dev` chains them in that order) because the SQL's
+`on conflict (id) do nothing` silently no-ops if the admin-created rows already exist.
