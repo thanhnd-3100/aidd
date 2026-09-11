@@ -1,0 +1,76 @@
+{
+  "score": 9.2,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "local Supabase password login returns a real session — phase 01 probe printed 'session? -> true access_token len=770', exit 0",
+    "the three dev seed users are loginable and their profiles rows exist — npm run db:seed:users printed 'verified login' for all three; psql shows profiles=3, auth.identities=3",
+    "an authenticated Playwright session reaches the server-side getUser check and opens the composer instead of redirecting to /login — chromium-auth smoke test clicks ghi-nhan-button, asserts role=dialog visible and URL still /sun-kudos",
+    "the auth cookie is never hand-serialized by name or chunk index — grep for sb-127 / sb-*-auth-token across e2e/ and playwright.config.ts returns no literal; the jar is filled by @supabase/ssr setAll",
+    "the database rejects a self-like, still allows liking someone else's kudos, and still rejects forged sender_id and forged like user_id — e2e/kudos-rls.spec.ts 4/4 pass with real 42501/403 denials, not 23505",
+    "no secret is present in any tracked file — reviewer audited scripts, e2e, playwright.config.ts, .env.local.example, package.json; .env.local and playwright/.auth/ both gitignored",
+    "tsc, jest, eslint, next build and the full playwright suite all pass — all five exit 0 (see temper-results.json)"
+  ],
+  "regressionChecked": [
+    "chromium-public 28 passed — the pre-existing home/login/countdown/awards-information suites were not orphaned by the three-project split",
+    "jest 27 suites / 180 tests unchanged from the session baseline",
+    "next build exit 0 — the kudos-view-model extraction does not break the production client/server boundary",
+    "kudos_likes fixture restored to exactly one row (aaaa… liked by 3333…) after the RLS suite ran",
+    "kudos_likes_delete_own left untouched — unliking your own like still works",
+    "grepped every \"use client\" module's value exports against Server Component call sites; no other instance of the client-reference-proxy defect exists",
+    "git diff --numstat supabase/config.toml = 1 1, so no unintended config drift"
+  ],
+  "contractStatus": "PASS",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": [],
+  "findings": [
+    {
+      "severity": "high",
+      "category": "correctness",
+      "location": "scripts/seed-auth-users.ts:102",
+      "summary": "main() ran at import time, so importing the shared user list re-seeded as a side effect and any transient failure called process.exit(1) during module load, killing the whole Playwright run with a misleading stack. Fixed by extracting the list to the side-effect-free scripts/dev-seed-user-list.ts (an import.meta guard was tried first and rejected — Playwright transpiles specs to CJS where import.meta is a syntax error).",
+      "disposition": "Accept"
+    },
+    {
+      "severity": "warning",
+      "category": "test-honesty",
+      "location": "e2e/sun-kudos-public.spec.ts:78",
+      "summary": "The unauthenticated like-redirect test wrapped its only assertion in if (await isVisible().catch(() => false)), so it passed with zero assertions whenever the selector drifted or the seed emptied. Guard removed; the like button is now asserted visible unconditionally before the click.",
+      "disposition": "Accept"
+    },
+    {
+      "severity": "warning",
+      "category": "migration-hygiene",
+      "location": "supabase/migrations/20260911140000_kudos_likes_block_self_like.sql:11",
+      "summary": "drop policy had no if exists, so a re-run failed. Added if exists and proved idempotency by applying the file twice. Matters more than usual here because the migration was applied via psql outside CLI tracking.",
+      "disposition": "Accept"
+    },
+    {
+      "severity": "warning",
+      "category": "stale-comment",
+      "location": "src/lib/kudos/toggle-like.ts:20",
+      "summary": "The doc comment still claimed self-like was deliberately not a DB constraint, contradicting the new migration. Rewritten to state both layers enforce it and why the server action alone is insufficient (a caller with their own token can POST to /rest/v1/kudos_likes directly).",
+      "disposition": "Accept"
+    },
+    {
+      "severity": "suggestion",
+      "category": "duplication",
+      "location": "src/components/kudos/composer/kudos-composer.tsx:246",
+      "summary": "MAX_HASHTAGS/MIN_HASHTAGS are duplicated in the composer, src/lib/kudos/create-kudos.ts and the DB check constraint, and the composer's export has zero importers. Deferred deliberately: plans/260911-1143-viet-kudo-screen phase 02 creates the shared hashtag-bounds module and restructures this file, so consolidating now would be churn.",
+      "disposition": "Defer"
+    },
+    {
+      "severity": "suggestion",
+      "category": "file-size",
+      "location": "e2e/sun-kudos-authenticated.spec.ts:1-404",
+      "summary": "404 lines, over the project's 200-line guideline — a direct consequence of moving the six fixme tests verbatim. Deferred to phase 05, which rewrites those bodies and is the natural place to split the file. Note home.spec.ts (424) and awards-information.spec.ts (462) already exceed it, so this is a pre-existing property of e2e/.",
+      "disposition": "Defer"
+    }
+  ],
+  "riskGate": {
+    "touchesSensitiveArea": true,
+    "signoffRequired": true,
+    "humanSignedOff": true
+  }
+}
