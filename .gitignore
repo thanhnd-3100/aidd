@@ -46,3 +46,6 @@ next-env.d.ts
 # supabase cli local state
 supabase/.temp/
 supabase/.branches/
+
+# e2e-only env (local Supabase stack)
+.env.e2e

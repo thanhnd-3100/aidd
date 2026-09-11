@@ -2,14 +2,17 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { defineConfig } from "@playwright/test";
 
-// The webServer's `npm run dev` picks up `.env.local` itself (Next.js does
-// this automatically), but the setup project's own Node process — which
-// signs in directly against Supabase — needs the same vars in *this*
-// process too. Loaded once here, before workers are spawned, so they
-// inherit it.
-const envLocalPath = path.resolve(process.cwd(), ".env.local");
-if (existsSync(envLocalPath)) {
-  process.loadEnvFile(envLocalPath);
+// The suite runs against the LOCAL Supabase stack, while the app itself runs
+// against the hosted project via `.env.local`. `.env.e2e` holds the local
+// values and is loaded here — before workers spawn — so the setup project's
+// own Node process (which signs in directly against Supabase) inherits them.
+// Falls back to `.env.local` so a checkout without `.env.e2e` still resolves
+// something rather than failing with an opaque "missing env var".
+const envPath = [".env.e2e", ".env.local"]
+  .map((f) => path.resolve(process.cwd(), f))
+  .find((f) => existsSync(f));
+if (envPath) {
+  process.loadEnvFile(envPath);
 }
 
 /**
@@ -67,6 +70,14 @@ export default defineConfig({
     timeout: 120 * 1000,
     env: {
       PRELAUNCH_GATE_ENABLED: "false",
+      // Next.js loads `.env.local` (hosted project) on its own, but it never
+      // overrides a variable already present in the environment — so these
+      // pin the server under test to the local stack. Without them the suite
+      // would sign in against local Supabase while the page it drives reads
+      // the hosted one, and every authenticated assertion would fail.
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
     },
   },
 });
